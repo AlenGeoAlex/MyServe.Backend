@@ -1,0 +1,6 @@
+﻿services:
+  myserve:
+    image: myserve
+    build:
+      context: .
+      dockerfile: MyServe/Dockerfile

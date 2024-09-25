@@ -1,0 +1,73 @@
+2024-09-23 00:23:08.314 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 150.3496 ms
+2024-09-23 00:23:10.310 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 3.4864 ms
+2024-09-23 00:23:10.408 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:23:23.460 +05:30 [ERR]    at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options) in B:\Hobby\MyServe\MyServe.Backend.App.Infrastructure\Client\JwtAccessTokenClient.cs:line 57
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+Microsoft.IdentityModel.Tokens.SecurityTokenKeyWrapException: IDX10658: WrapKey failed, exception from cryptographic operation: '[PII of type 'System.ArgumentOutOfRangeException' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'
+   at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options) in B:\Hobby\MyServe\MyServe.Backend.App.Infrastructure\Client\JwtAccessTokenClient.cs:line 57
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+2024-09-23 00:23:23.589 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 13272.8261 ms
+2024-09-23 00:26:09.049 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.5550 ms
+2024-09-23 00:26:09.055 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:26:12.693 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 3640.1005 ms
+2024-09-23 00:26:25.052 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 0.0811 ms
+2024-09-23 00:26:25.058 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:26:25.176 +05:30 [INF] HTTP POST /auth/otp responded 201 in 118.9099 ms
+2024-09-23 00:26:45.028 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.0757 ms
+2024-09-23 00:26:45.033 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:26:47.731 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 2698.5068 ms
+2024-09-23 00:27:09.404 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 0.1737 ms
+2024-09-23 00:27:09.409 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:27:09.860 +05:30 [INF] HTTP POST /auth/otp responded 201 in 451.1658 ms
+2024-09-23 00:27:13.854 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.1209 ms
+2024-09-23 00:27:13.857 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:27:17.505 +05:30 [ERR]    at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options)
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+Microsoft.IdentityModel.Tokens.SecurityTokenKeyWrapException: IDX10658: WrapKey failed, exception from cryptographic operation: '[PII of type 'System.ArgumentOutOfRangeException' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'
+   at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options)
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+2024-09-23 00:27:17.595 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 3737.9561 ms
+2024-09-23 00:29:56.713 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.0864 ms
+2024-09-23 00:29:56.716 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:31:36.621 +05:30 [ERR]    at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options)
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+Microsoft.IdentityModel.Tokens.SecurityTokenKeyWrapException: IDX10658: WrapKey failed, exception from cryptographic operation: '[PII of type 'System.ArgumentOutOfRangeException' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'
+   at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options)
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+2024-09-23 00:31:36.707 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 99991.0937 ms
+2024-09-23 00:31:41.456 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.0733 ms
+2024-09-23 00:31:41.459 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:31:58.009 +05:30 [INF] Initialized secret client
+2024-09-23 00:32:00.511 +05:30 [INF] Configured token validation
+2024-09-23 00:32:02.133 +05:30 [INF] Supabase Project URL has been configured to: https://qtyzpaoatgqfedtsayug.supabase.co
+2024-09-23 00:32:03.349 +05:30 [INF] Connected to Redis...

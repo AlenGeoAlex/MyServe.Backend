@@ -1,0 +1,7 @@
+2024-09-23 00:54:10.610 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 135.1810 ms
+2024-09-23 00:54:15.912 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 4.4434 ms
+2024-09-23 00:54:16.003 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:54:57.868 +05:30 [INF] Initialized secret client
+2024-09-23 00:55:00.683 +05:30 [INF] Configured token validation
+2024-09-23 00:55:02.425 +05:30 [INF] Supabase Project URL has been configured to: https://qtyzpaoatgqfedtsayug.supabase.co
+2024-09-23 00:55:03.679 +05:30 [INF] Connected to Redis...

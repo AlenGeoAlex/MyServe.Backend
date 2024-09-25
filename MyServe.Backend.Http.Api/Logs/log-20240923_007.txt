@@ -1,0 +1,23 @@
+2024-09-23 00:32:04.952 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 112.4933 ms
+2024-09-23 00:32:08.942 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 3.1294 ms
+2024-09-23 00:32:09.021 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:32:37.199 +05:30 [ERR]    at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options) in B:\Hobby\MyServe\MyServe.Backend.App.Infrastructure\Client\JwtAccessTokenClient.cs:line 70
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+Microsoft.IdentityModel.Tokens.SecurityTokenKeyWrapException: IDX10658: WrapKey failed, exception from cryptographic operation: '[PII of type 'System.ArgumentOutOfRangeException' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'
+   at Microsoft.IdentityModel.Tokens.SymmetricKeyWrapProvider.WrapKey(Byte[] keyBytes)
+   at Microsoft.IdentityModel.JsonWebTokens.JwtTokenUtilities.GetSecurityKey(EncryptingCredentials encryptingCredentials, CryptoProviderFactory cryptoProviderFactory, IDictionary`2 additionalHeaderClaims, Byte[]& wrappedKey)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.EncryptToken(JwtSecurityToken innerJwt, EncryptingCredentials encryptingCredentials, String tokenType, IDictionary`2 additionalHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateJwtSecurityTokenPrivate(String issuer, String audience, IList`1 audiences, ClaimsIdentity subject, Nullable`1 notBefore, Nullable`1 expires, Nullable`1 issuedAt, SigningCredentials signingCredentials, EncryptingCredentials encryptingCredentials, IDictionary`2 claimCollection, String tokenType, IDictionary`2 additionalHeaderClaims, IDictionary`2 additionalInnerHeaderClaims)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.CreateToken(SecurityTokenDescriptor tokenDescriptor)
+   at MyServe.Backend.App.Infrastructure.Client.JwtAccessTokenClient.CreateTokenAsync(TokenGenerationOption options) in B:\Hobby\MyServe\MyServe.Backend.App.Infrastructure\Client\JwtAccessTokenClient.cs:line 70
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 24
+2024-09-23 00:32:37.327 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 28380.4827 ms
+2024-09-23 00:41:45.358 +05:30 [INF] Initialized secret client
+2024-09-23 00:41:48.023 +05:30 [INF] Configured token validation
+2024-09-23 00:41:49.646 +05:30 [INF] Supabase Project URL has been configured to: https://qtyzpaoatgqfedtsayug.supabase.co
+2024-09-23 00:41:50.856 +05:30 [INF] Connected to Redis...

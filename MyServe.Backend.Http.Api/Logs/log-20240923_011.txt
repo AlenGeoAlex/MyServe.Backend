@@ -1,0 +1,17 @@
+2024-09-23 00:55:04.944 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 30.5303 ms
+2024-09-23 00:55:05.115 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:55:05.150 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 246.5610 ms
+2024-09-23 00:55:16.635 +05:30 [INF] HTTP POST /auth/otp/validate responded 400 in 11648.7364 ms
+2024-09-23 00:55:30.859 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.4109 ms
+2024-09-23 00:55:30.866 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:55:30.960 +05:30 [INF] HTTP POST /auth/otp/validate responded 400 in 96.0024 ms
+2024-09-23 00:55:41.235 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 0.1562 ms
+2024-09-23 00:55:41.238 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:55:41.429 +05:30 [INF] HTTP POST /auth/otp responded 201 in 191.9030 ms
+2024-09-23 00:55:56.141 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.0954 ms
+2024-09-23 00:55:56.145 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:55:58.587 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 2442.3969 ms
+2024-09-23 00:58:10.401 +05:30 [INF] Initialized secret client
+2024-09-23 00:58:12.887 +05:30 [INF] Configured token validation
+2024-09-23 00:58:14.486 +05:30 [INF] Supabase Project URL has been configured to: https://qtyzpaoatgqfedtsayug.supabase.co
+2024-09-23 00:58:15.694 +05:30 [INF] Connected to Redis...

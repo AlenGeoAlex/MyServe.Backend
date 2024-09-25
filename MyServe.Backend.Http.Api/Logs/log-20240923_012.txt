@@ -1,0 +1,7 @@
+2024-09-23 00:58:17.074 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 117.1909 ms
+2024-09-23 00:58:27.245 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 5.9350 ms
+2024-09-23 00:58:27.332 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:58:28.438 +05:30 [INF] HTTP POST /auth/otp responded 201 in 1187.8483 ms
+2024-09-23 00:58:42.991 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.6921 ms
+2024-09-23 00:58:42.996 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:58:45.460 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 2464.7741 ms

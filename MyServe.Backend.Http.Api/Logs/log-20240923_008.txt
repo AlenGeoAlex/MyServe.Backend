@@ -1,0 +1,41 @@
+2024-09-23 00:41:52.377 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 158.1627 ms
+2024-09-23 00:41:55.546 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 3.6991 ms
+2024-09-23 00:41:55.637 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:41:56.688 +05:30 [INF] HTTP POST /auth/otp responded 201 in 1135.9393 ms
+2024-09-23 00:42:04.002 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.7628 ms
+2024-09-23 00:42:04.006 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:42:18.501 +05:30 [ERR]    at System.Transactions.TransactionStateAborted.EndCommit(InternalTransaction tx)
+   at System.Transactions.CommittableTransaction.Commit()
+   at System.Transactions.TransactionScope.InternalDispose()
+   at System.Transactions.TransactionScope.Dispose()
+   at MyServe.Backend.App.Infrastructure.Abstract.UnitOfWork.ReadWriteUnitOfWork.CommitAsync() in B:\Hobby\MyServe\MyServe.Backend.App.Infrastructure\Abstract\UnitOfWork\ReadWriteUnitOfWork.cs:line 64
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 31
+System.Transactions.TransactionAbortedException: The transaction has aborted.
+ ---> Npgsql.PostgresException (0x80004005): 55000: prepared transactions are disabled
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.ExecuteInternalCommand(String query, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ExecuteInternalCommand(String query)
+   at Npgsql.VolatileResourceManager.Prepare(PreparingEnlistment preparingEnlistment)
+  Exception data:
+    Severity: ERROR
+    SqlState: 55000
+    MessageText: prepared transactions are disabled
+    Hint: Set max_prepared_transactions to a nonzero value.
+    File: twophase.c
+    Line: 391
+    Routine: MarkAsPreparing
+   --- End of inner exception stack trace ---
+   at System.Transactions.TransactionStateAborted.EndCommit(InternalTransaction tx)
+   at System.Transactions.CommittableTransaction.Commit()
+   at System.Transactions.TransactionScope.InternalDispose()
+   at System.Transactions.TransactionScope.Dispose()
+   at MyServe.Backend.App.Infrastructure.Abstract.UnitOfWork.ReadWriteUnitOfWork.CommitAsync() in B:\Hobby\MyServe\MyServe.Backend.App.Infrastructure\Abstract\UnitOfWork\ReadWriteUnitOfWork.cs:line 64
+   at MyServe.Backend.App.Application.Features.Auth.ValidateOtp.ValidateOtpCommandHandler.Handle(ValidateOtpCommand request, CancellationToken cancellationToken) in B:\Hobby\MyServe\MyServe.Backend.App.Application\Features\Auth\ValidateOtp\ValidateOtpCommandHandler.cs:line 31
+2024-09-23 00:42:18.510 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 14505.2556 ms
+2024-09-23 00:44:10.524 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.1337 ms
+2024-09-23 00:44:10.529 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-09-23 00:49:36.003 +05:30 [INF] Initialized secret client
+2024-09-23 00:49:38.815 +05:30 [INF] Configured token validation
+2024-09-23 00:49:40.472 +05:30 [INF] Supabase Project URL has been configured to: https://qtyzpaoatgqfedtsayug.supabase.co
+2024-09-23 00:49:41.708 +05:30 [INF] Connected to Redis...

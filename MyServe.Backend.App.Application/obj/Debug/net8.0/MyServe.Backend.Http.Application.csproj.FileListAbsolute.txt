@@ -1,0 +1,17 @@
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Http.Application.deps.json
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Http.Application.dll
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Http.Application.pdb
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Common.dll
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Http.Domain.dll
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Common.pdb
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\bin\Debug\net8.0\MyServe.Backend.Http.Domain.pdb
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.csproj.AssemblyReference.cache
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.GeneratedMSBuildEditorConfig.editorconfig
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.AssemblyInfoInputs.cache
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.AssemblyInfo.cs
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.csproj.CoreCompileInputs.cache
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe..006F4185.Up2Date
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.dll
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\refint\MyServe.Backend.Http.Application.dll
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\MyServe.Backend.Http.Application.pdb
+B:\Hobby\MyServe\MyServe.Backend.Http.Application\obj\Debug\net8.0\ref\MyServe.Backend.Http.Application.dll
