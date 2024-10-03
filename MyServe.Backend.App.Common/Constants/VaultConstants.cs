@@ -49,6 +49,37 @@ public static class VaultConstants
         }
     }
 
+    public static class Storage
+    {
+        public static class S3
+        {
+            private const string BaseS3Region = "storage-s3-bucket";
+            private const string BaseS3ConnectionUrl = "storage-s3-endpoint";
+            private const string BaseS3ConnectionAccessKey = "storage-s3-access-key";
+            private const string BaseS3ConnectionSecretKey = "storage-s3-secret-key";
+
+            public static string BucketWithPrefix(string prefix)
+            {
+                return $"{prefix}-{BaseS3Region}";
+            }
+
+            public static string EndpointWithPrefix(string prefix)
+            {
+                return $"{prefix}-{BaseS3ConnectionUrl}";
+            }
+
+            public static string ConnectionAccessKeyWithPrefix(string prefix)
+            {
+                return $"{prefix}-{BaseS3ConnectionAccessKey}";
+            }
+            
+            public static string ConnectionSecretKeyWithPrefix(string prefix)
+            {
+                return $"{prefix}-{BaseS3ConnectionSecretKey}";
+            }
+        }
+    }
+    
     public static class Smtp
     {
         public const string Host = "smtp-host";

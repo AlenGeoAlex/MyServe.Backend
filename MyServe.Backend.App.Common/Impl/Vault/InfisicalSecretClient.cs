@@ -1,6 +1,7 @@
 using Infisical.Sdk;
 using Microsoft.Extensions.Configuration;
 using MyServe.Backend.Common.Abstract;
+using MyServe.Backend.Common.Exceptions;
 using Supabase.Interfaces;
 
 namespace MyServe.Backend.Common.Impl;
@@ -49,8 +50,14 @@ public class InfisicalSecretClient(IConfiguration configuration) : ISecretClient
             ProjectId = _projectId,
             Environment = clientEnv,
         };
-        var secret = _client.GetSecret(getSecretOptions);
-
-        return secret.SecretValue;
+        try
+        {
+            var secret = _client.GetSecret(getSecretOptions);
+            return secret.SecretValue;
+        }
+        catch (Exception e)
+        {
+            throw new MissingSecretException(secretName, e);
+        }
     }
 }

@@ -37,8 +37,13 @@ public class ExceptionHandlingMiddleware(
         context.Response.ContentType = "application/json";
         if (exceptionDetail.StatusCode is < 500 and >= 300 )
         {
-            context.Response.Headers["SCE-Code"] = exceptionDetail.ErrorCode.ToString();
-            context.Response.Headers["SCE-Message"] = exceptionDetail.Message;
+            context.Response.Headers["MySe-Code"] = exceptionDetail.ErrorCode.ToString();
+            context.Response.Headers["MySe-Message"] = exceptionDetail.Message;
+        }
+
+        if (exceptionDetail is { StatusCode: 401, Type: "Access Token Validation" })
+        {
+            context.Response.Headers["MySe-ExpiredAccess"] = "true";
         }
         await context.Response.WriteAsJsonAsync(exceptionDetail);
     }
@@ -69,13 +74,19 @@ public class ExceptionHandlingMiddleware(
             //     null,
             //     ExtendedMessage: showExtended ? jwtFetchKeySecretException.Message : ""
             //     ),
-            UnauthorizedAccessException unauthorizedAccessException => new ExceptionDetail(
+            UnauthorizedAccessException unauthorizedAccessException => unauthorizedAccessException.Message.Contains("Lifetime validation failed. The token is expired") 
+                ? new ExceptionDetail(
                 StatusCodes.Status401Unauthorized,
-                "Unauthorized access",
-                unauthorizedAccessException.Message,
+                "Access Token Validation",
+                "Access token validity has been expired",
                 null,
-                null
-                ),
+                null)
+                : new ExceptionDetail(
+                    StatusCodes.Status403Forbidden,
+                    "Forbidden access",
+                    unauthorizedAccessException.Message,
+                    null,
+                    null),
             BadHttpRequestException badHttpRequestException => new ExceptionDetail(
                 StatusCodes.Status400BadRequest,
                 Type: "The request is not valid",

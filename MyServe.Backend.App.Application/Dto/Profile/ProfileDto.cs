@@ -6,5 +6,9 @@ public class ProfileDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string EmailAddress { get; set; }
-    public ProfileSettingDto Settings { get; set; }
+    public ProfileSettingDto ProfileSettings { get; set; }
+    public string? ProfileImageUrl { get; set; }
+    public string EncryptionKey { get; set; }
+
+
 }

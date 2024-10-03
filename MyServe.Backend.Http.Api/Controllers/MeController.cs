@@ -6,6 +6,7 @@ using MyServe.Backend.Common.Constants;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.App.Application.Features.Profile.Create;
 using MyServe.Backend.App.Application.Features.Profile.Me;
+using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
 namespace MyServe.Backend.Api.Controllers;
@@ -36,13 +37,27 @@ public class MeController(ICacheService cacheService, ILogger logger, IRequestCo
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateProfileCommand createProfileCommand)
+    [Authorize]
+    public async Task<IActionResult> Post()
     {
-        //TODO
-        //createProfileCommand.ProfileId = requestContext.Requester.UserId;
-        //createProfileCommand.Email = requestContext.Requester.EmailAddress;
-        createProfileCommand.ProfileId = Guid.Parse("63dae594-63fb-4eb6-a68f-3607a1317df6");
-        createProfileCommand.Email = "alengeoalex@gmail.com";
+        var formCollection = await Request.ReadFormAsync();
+        if (!formCollection.ContainsKey("body"))
+            return BadRequest("Body is missing on the request");
+
+        var bodyRaw = formCollection["body"];
+        if(string.IsNullOrWhiteSpace(bodyRaw))
+            return BadRequest("Invalid body provided in the form. The body must be a valid JSON");
+        
+        var createProfileCommand = JsonConvert.DeserializeObject<CreateProfileCommand>(bodyRaw.ToString());
+        
+        if(createProfileCommand is null)
+            return BadRequest("Invalid JSON body provided in the form. Failed to parse the body object");
+        
+        createProfileCommand.ProfileId = requestContext.Requester.UserId;
+        createProfileCommand.Email = requestContext.Requester.EmailAddress;
+
+        var fileAsStream = GetFileAsStream("profileImage");
+        createProfileCommand.ProfileImageStream = fileAsStream;
 
         var createProfileResponse = await mediator.Send(createProfileCommand);
         if(createProfileResponse.Response == CreateProfileResponse.Duplicate)

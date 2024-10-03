@@ -1,8 +1,0 @@
-2024-09-24 23:59:36.579 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 105.9088 ms
-2024-09-24 23:59:39.924 +05:30 [INF] Bus started: "rabbitmq://puffin.rmq2.cloudamqp.com/pbzvpulc"
-2024-09-24 23:59:45.954 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 3.7006 ms
-2024-09-24 23:59:46.049 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
-2024-09-24 23:59:47.844 +05:30 [INF] HTTP POST /auth/otp responded 201 in 1883.1746 ms
-2024-09-24 23:59:56.911 +05:30 [INF] HTTP OPTIONS /auth/otp/validate responded 204 in 0.3549 ms
-2024-09-24 23:59:56.916 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
-2024-09-24 23:59:59.773 +05:30 [INF] HTTP POST /auth/otp/validate responded 200 in 2857.5944 ms

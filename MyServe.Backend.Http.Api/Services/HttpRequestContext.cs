@@ -44,8 +44,11 @@ public class HttpRequestContext(IHttpContextAccessor contextAccessor) : IRequest
         
         if(string.IsNullOrEmpty(contextAccessor.HttpContext.Request.Headers.Authorization))
             return new NoRequester();
-
+        
         var contextUser = contextAccessor.HttpContext.User;
+        if(!contextUser.Identity?.IsAuthenticated ?? false)
+            return new NoRequester();
+        
         var userId = contextUser.FindFirstValue(ClaimTypes.NameIdentifier);
         var email = contextUser.FindFirstValue(ClaimTypes.Email);
         

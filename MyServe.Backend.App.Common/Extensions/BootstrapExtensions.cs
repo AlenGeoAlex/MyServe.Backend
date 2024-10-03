@@ -21,5 +21,11 @@ public static class BootstrapExtensions
         collection.AddSingleton<ISecretClient>(secretClient);
         return secretClient;
     }
+
+
+    public static bool IsRegistered(this IServiceCollection collection, Type type)
+    {
+        return collection.Any(x => x.ServiceType == type);
+    }
     
 }

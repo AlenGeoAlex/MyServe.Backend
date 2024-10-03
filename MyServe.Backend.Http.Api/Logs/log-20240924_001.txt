@@ -1,8 +1,0 @@
-2024-09-24 01:55:53.579 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 224.7293 ms
-2024-09-24 01:55:53.697 +05:30 [INF] Bus started: "rabbitmq://puffin.rmq2.cloudamqp.com/pbzvpulc"
-2024-09-24 01:57:04.183 +05:30 [INF] HTTP OPTIONS /auth/otp responded 204 in 6.1199 ms
-2024-09-24 01:57:04.284 +05:30 [DBG] AuthenticationScheme: Bearer was not authenticated.
-2024-09-24 01:57:25.126 +05:30 [INF] HTTP POST /auth/otp responded 201 in 20935.8810 ms
-2024-09-24 18:43:39.391 +05:30 [INF] Initialized secret client
-2024-09-24 18:43:41.902 +05:30 [INF] Configured token validation
-2024-09-24 18:43:43.872 +05:30 [INF] Connected to Redis...

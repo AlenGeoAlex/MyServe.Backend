@@ -27,7 +27,7 @@ public class CacheControl : ICacheControl
 
     public void FrameEndpointCacheKey(string module, params string[] keys)
     {
-        _cacheKey = module + "-" + string.Join("-", _expiryKeys);
+        _cacheKey = module + "-" + string.Join("-", keys);
     }
 
     public bool IsEndpointCached => !string.IsNullOrEmpty(_cacheKey);

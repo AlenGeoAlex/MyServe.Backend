@@ -1,5 +1,0 @@
-2024-09-24 23:31:27.136 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 118.1052 ms
-2024-09-24 23:31:28.227 +05:30 [INF] Bus started: "rabbitmq://puffin.rmq2.cloudamqp.com/pbzvpulc"
-2024-09-24 23:32:11.815 +05:30 [INF] Initialized secret client
-2024-09-24 23:32:14.464 +05:30 [INF] Configured token validation
-2024-09-24 23:32:15.762 +05:30 [INF] Connected to Redis...

@@ -1,6 +1,0 @@
-2024-09-24 23:36:54.238 +05:30 [INF] HTTP GET /swagger/index.html responded 200 in 162.1469 ms
-2024-09-24 23:36:54.292 +05:30 [DBG] Successfully validated the token.
-2024-09-24 23:36:54.295 +05:30 [DBG] AuthenticationScheme: Bearer was successfully authenticated.
-2024-09-24 23:37:05.880 +05:30 [INF] Initialized secret client
-2024-09-24 23:37:08.259 +05:30 [INF] Configured token validation
-2024-09-24 23:37:09.759 +05:30 [INF] Connected to Redis...

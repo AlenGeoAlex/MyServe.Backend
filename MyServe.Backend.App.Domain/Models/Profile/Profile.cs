@@ -13,7 +13,9 @@ public class Profile
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
-    public ProfileSettings Settings { get; set; }
+    public ProfileSettings ProfileSettings { get; set; }
     public string EmailAddress { get; set; }
     public string? ProfileImageUrl { get; set; }
+    public string EncryptionKey { get; set; }
+
 }
