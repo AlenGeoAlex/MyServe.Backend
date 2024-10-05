@@ -14,7 +14,7 @@ public class RefreshTokenRepository([FromKeyedServices("read-only-connection")]N
 {
     public override async Task<RefreshToken?> GetByIdAsync(Guid id)
     {
-        var token = await readOnlyConnection.QueryAsync(RefreshTokenSql.GetRefreshTokenById, new { Id = id });
+        var token = await readOnlyConnection.QueryAsync(RefreshTokenSql.GetRefreshTokenById, new { RefreshTokenId = id });
         return token.Select(x => new RefreshToken()
         {
             Id = x.id,

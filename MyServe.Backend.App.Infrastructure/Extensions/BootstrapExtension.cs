@@ -138,6 +138,7 @@ public static class BootstrapExtension
         services.AddScoped<IUserOtpService, UserOtpService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+        services.AddScoped<IFileService, FileService>();
     }
 
     private static void RegisterRepositories(this IServiceCollection services)
@@ -146,6 +147,7 @@ public static class BootstrapExtension
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserOtpRepository, UserOtpRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IFileRepository, FileRepository>();
     }
 
     private static void RegisterTypeHandlers(this IServiceCollection services)

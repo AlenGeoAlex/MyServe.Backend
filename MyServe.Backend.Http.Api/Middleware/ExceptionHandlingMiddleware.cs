@@ -94,6 +94,13 @@ public class ExceptionHandlingMiddleware(
                 Errors: null,
                 ExtendedMessage: showExtended ? badHttpRequestException.InnerException?.Message : ""
                 ),
+            DataWriteFailedException dataWriteFailedException => new ExceptionDetail(
+                (int)dataWriteFailedException.ConstraintInfo.HttpStatusCode,
+                Type: "Constraint failed",
+                Message: dataWriteFailedException.Message,
+                Errors: null,
+                ExtendedMessage: showExtended ? dataWriteFailedException.InnerException?.Message : ""
+                ),
             AppException appException => CreateExceptionDetail(appException),
             _ => new ExceptionDetail(
                 StatusCodes.Status500InternalServerError,

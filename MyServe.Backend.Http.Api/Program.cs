@@ -68,6 +68,7 @@ public static class Program
         // app.UseRateLimiter(); 
         app.UseAuthorization();
         app.UseMiddleware<CacheMiddleware>();
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers(); 
 
         await app.RunAsync();
