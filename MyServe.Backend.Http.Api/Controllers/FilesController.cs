@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.App.Application.Features.Files.Create;
 using MyServe.Backend.App.Application.Features.Files.List;
+using MyServe.Backend.App.Application.Features.Files.Signed;
 using MyServe.Backend.Common.Abstract;
 using MyServe.Backend.Common.Constants;
 using ILogger = Serilog.ILogger;
@@ -39,5 +40,11 @@ public class FilesController(IMediator mediator, ICacheService cacheService, ILo
 
         var listFileResponse = await mediator.Send(fileOptions);
         return Ok(listFileResponse);
+    }
+
+    [HttpPost("signed")]
+    public async Task<IActionResult> GetSignedUrl([FromBody] CreateSignedUrlCommand command)
+    {
+        return Ok();
     }
 }

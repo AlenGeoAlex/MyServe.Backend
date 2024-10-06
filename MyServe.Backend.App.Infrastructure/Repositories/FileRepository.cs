@@ -73,7 +73,53 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
             Take = listOptions.Take,
         });
 
-        return files.Select(x =>
+        return HydrateFiles(files);
+    }
+
+    public async Task<(List<File> files, List<File> parents)> ListFilesWithParent(Guid ownerId, Guid? parentId = null, ListOptions? listOptions = null)
+    {
+        listOptions ??= new ListFileOptions();
+
+        var queryCombined = FileSql.ListFile(parentId.HasValue, listOptions.OrderBy, listOptions.OrderDirection) + ";\n";
+        queryCombined += FileSql.GetParentsOfChild;
+
+        await using var multGridReader = await readOnlyConnection.QueryMultipleAsync(queryCombined, new
+        {
+            Owner = ownerId,
+            ParentId = parentId,
+            OrderColumn = listOptions.OrderBy,
+            OrderDirection = listOptions.OrderDirection,
+            Skip = listOptions.Skip,
+            Take = listOptions.Take,
+        });
+
+        var filesEnumerable = await multGridReader.ReadAsync();
+        var files = HydrateFiles(filesEnumerable);
+        var parentEnumerable = await multGridReader.ReadAsync();
+        var parentList = HydrateParents(parentEnumerable);
+        return (files, parentList);
+    }
+
+    public Task<List<File>> GetParents(Guid childId)
+    {
+        throw new NotImplementedException();
+    }
+
+    #region Hydrations
+
+    private List<File> HydrateParents(IEnumerable<dynamic> dynamic)
+    {
+        return dynamic.Select(x => new File()
+        {
+            Id = x.id,
+            Name = x.name,
+            ParentId = x.parent
+        }).ToList();
+    }
+
+    protected List<File> HydrateFiles(IEnumerable<dynamic> dynamic)
+    {
+        return dynamic.Select(x =>
         {
             string fileTypeRaw = x.type.ToString();
             var file = new File()
@@ -106,6 +152,8 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         }).ToList();
     }
 
+    #endregion
+    
     private static class FileSql
     {
         public const string GetById = """
@@ -116,6 +164,23 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                                     INSERT INTO files.file ("id", "name", parent, "type", "owner", created_at, target_url, target_size, mime_type, created)
                                     VALUES (@Id, @Name, @ParentId, @Type::files.filetype, @Owner, @CreatedAt, @TargetUrl, @TargetSize, @MimeType, @Created)
                                   """;
+        
+        public const string GetParentsOfChild = """
+                                         WITH RECURSIVE parent_dir AS (
+                                             SELECT id, name, parent, 0 AS depth
+                                             FROM files.file
+                                             WHERE id = @ParentId and type = 'dir'
+                                             
+                                             UNION ALL
+                                             
+                                             SELECT f.id, f.name, f.parent, pd.depth + 1
+                                             FROM files.file f
+                                             JOIN parent_dir pd ON f.id = pd.parent and f.type = 'dir'
+                                         )
+                                         SELECT id, name, parent
+                                         FROM parent_dir
+                                         ORDER BY depth DESC;
+                                         """;        
 
         public static readonly Func<bool, string, string, string> ListFile =
             ((isParentPresent, orderBy, orderByDirection) =>

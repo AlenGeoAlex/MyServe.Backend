@@ -62,7 +62,7 @@ public static class Program
         });
         
         app.UseCors("cors"); 
-        app.UseHttpsRedirection(); 
+        //app.UseHttpsRedirection(); 
         app.UseAuthentication(); 
         app.UseRouting(); 
         // app.UseRateLimiter(); 

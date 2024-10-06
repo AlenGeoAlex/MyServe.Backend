@@ -36,9 +36,9 @@ public class FileService(IFileRepository fileRepository, IRequestContext request
         return fileDto;
     }
 
-    public async Task<List<FileDto>> ListMyFiles(Guid userId, Guid? parentId, ListOptions listOptions)
+    public async Task<(List<FileDto> files, List<FileDto> parents)> ListMyFiles(Guid userId, Guid? parentId, ListOptions listOptions)
     {
-        var listFiles = await fileRepository.ListFiles(userId, parentId, listOptions);
-        return listFiles.Select(x => FileMapper.ToFileDto(x)).ToList();
+        var (files, parents) = await fileRepository.ListFilesWithParent(userId, parentId, listOptions);
+        return (files.Select(x => FileMapper.ToFileDto(x)).ToList(), parents.Select(x =>FileMapper.ToFileDto(x)).ToList());
     }
 }

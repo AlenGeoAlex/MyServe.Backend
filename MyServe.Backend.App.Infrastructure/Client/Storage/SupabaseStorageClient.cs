@@ -1,6 +1,7 @@
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.Common.Exceptions.Storage;
 using MyServe.Backend.Common.Models;
+using MyServe.Backend.Common.Options;
 using Serilog;
 using Supabase.Storage;
 using FileOptions = Supabase.Storage.FileOptions;
@@ -39,7 +40,7 @@ public class SupabaseStorageClient(Supabase.Client supabaseClient, ILogger logge
         throw new NotImplementedException();
     }
 
-    public Task<string> GeneratePreSignedUrlAsync()
+    public Task<Uri> GeneratePreSignedUrlAsync(SignedStorageAccessOptions accessOptions, params string[] filePath)
     {
         throw new NotImplementedException();
     }

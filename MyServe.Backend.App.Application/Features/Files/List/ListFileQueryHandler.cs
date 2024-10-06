@@ -11,7 +11,8 @@ public class ListFileQueryHandler(IFileService fileService) : IRequestHandler<Li
 
         return new ListFileResponse()
         {
-            Files = listMyFiles
+            Files = listMyFiles.files,
+            Parents = listMyFiles.parents
         };
     }
 }

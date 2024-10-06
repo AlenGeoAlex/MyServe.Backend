@@ -7,7 +7,4 @@ using Serilog;
 
 namespace MyServe.Backend.App.Infrastructure.Client.Storage;
 
-public class ProfileS3StorageClient([FromKeyedServices(ServiceKeyConstants.Storage.ProfileStorage)]IAmazonS3 s3Client, ILogger logger, [FromKeyedServices(ServiceKeyConstants.Storage.ProfileStorage)] BucketCustomConfiguration bucketCustomConfiguration) : S3StorageClient(s3Client, logger, bucketCustomConfiguration), IStorageClient
-{
-    
-}
+public class ProfileS3StorageClient([FromKeyedServices(ServiceKeyConstants.Storage.ProfileStorage)]IAmazonS3 s3Client, ILogger logger, [FromKeyedServices(ServiceKeyConstants.Storage.ProfileStorage)] BucketCustomConfiguration bucketCustomConfiguration) : S3StorageClient(s3Client, logger, bucketCustomConfiguration), IStorageClient { }

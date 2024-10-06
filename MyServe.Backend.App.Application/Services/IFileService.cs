@@ -9,6 +9,6 @@ public interface IFileService
 
     public Task<FileDto> Create(CreateFileCommand command);
 
-    public Task<List<FileDto>> ListMyFiles(Guid userId, Guid? parentId, ListOptions listOptions);
+    public Task<(List<FileDto> files, List<FileDto> parents)> ListMyFiles(Guid userId, Guid? parentId, ListOptions listOptions);
 
 }

@@ -7,6 +7,7 @@ using MimeMapping;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.Common.Exceptions.Storage;
 using MyServe.Backend.Common.Models;
+using MyServe.Backend.Common.Options;
 using Serilog;
 
 namespace MyServe.Backend.App.Infrastructure.Client.Storage;
@@ -44,16 +45,19 @@ public abstract class S3StorageClient(IAmazonS3 s3Client, ILogger logger, Bucket
     protected virtual PutObjectRequest ConstructPutObjectRequest(FileContent fileContent, bool publicRead,
         string bucketName, string key)
     {
-        var putObjectRequest = new PutObjectRequest()
+        var putObjectRequest = new PutObjectRequest
         {
             BucketName = bucketName,
             Key = key,
             InputStream = fileContent.FileStream,
-            ContentType = (fileContent.ContentType ?? new ContentType()).MediaType
+            ContentType = (fileContent.ContentType ?? new ContentType()).MediaType,
+            Metadata =
+            {
+                ["Content-Type"] = (fileContent.ContentType ?? new ContentType()).MediaType
+            },
+            CannedACL = publicRead ? S3CannedACL.PublicRead : S3CannedACL.Private
         };
 
-        putObjectRequest.Metadata["Content-Type"] = (fileContent.ContentType ?? new ContentType()).MediaType;
-        putObjectRequest.CannedACL = publicRead ? S3CannedACL.PublicRead : S3CannedACL.Private;
         return putObjectRequest;
     }
 
@@ -85,9 +89,18 @@ public abstract class S3StorageClient(IAmazonS3 s3Client, ILogger logger, Bucket
         throw new NotImplementedException();
     }
 
-    public Task<string> GeneratePreSignedUrlAsync()
+    public async Task<Uri> GeneratePreSignedUrlAsync(SignedStorageAccessOptions accessOptions, params string[] filePath)
     {
-        throw new NotImplementedException();
+        var getPreSignedUrlRequest = new GetPreSignedUrlRequest()
+        {
+            BucketName = bucketCustomConfiguration.Bucket,
+            Expires = accessOptions.Expiry,
+            Verb = Enum.Parse<HttpVerb>(accessOptions.Action),
+            Key = string.Join("/", filePath)
+        };
+
+        var preSignedUrl = await s3Client.GetPreSignedURLAsync(getPreSignedUrlRequest);
+        return new Uri(preSignedUrl);
     }
 
     protected virtual async Task<bool> EnsureBucketExistsAsync(string bucketName)

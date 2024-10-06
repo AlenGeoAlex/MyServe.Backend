@@ -8,7 +8,7 @@ public class FileDto
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Guid? ParentId { get; set; }
-    public FileType Type { get; set; }
+    public string Type { get; set; }
     public Guid Owner { get; set; }
     public UserIdentificationDto OwnerProfile { get; set; }
     public DateTimeOffset CreatedAt { get; set; }

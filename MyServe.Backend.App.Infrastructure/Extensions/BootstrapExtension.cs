@@ -267,10 +267,36 @@ public static class BootstrapExtension
         
         if (storageConfiguration.Files.Type == StorageType.S3)
         {
-            var region = RegionEndpoint.GetBySystemName(secretTasks[VaultConstants.Storage.S3.BucketWithPrefix(storageConfiguration.Files.VaultPrefix)].Result);
             var serviceUrl = secretTasks[VaultConstants.Storage.S3.EndpointWithPrefix(storageConfiguration.Files.VaultPrefix)].Result;
             var accessKey = secretTasks[VaultConstants.Storage.S3.ConnectionAccessKeyWithPrefix(storageConfiguration.Files.VaultPrefix)].Result;
             var secretKey = secretTasks[VaultConstants.Storage.S3.ConnectionSecretKeyWithPrefix(storageConfiguration.Files.VaultPrefix)].Result;
+            var bucket = secretTasks[VaultConstants.Storage.S3.BucketWithPrefix(storageConfiguration.Files.VaultPrefix)].Result;
+            
+
+            var filesS3Client =  new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey), new AmazonS3Config()
+            {
+                ServiceURL = serviceUrl,
+            });
+
+            var bucketExists = false;
+            try
+            {
+                bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(filesS3Client, bucket);
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error("An unknown error occured while checking whether the bucket is created!");
+                Log.Logger.Error(e.Message);
+            }
+            
+            if(!bucketExists)
+                throw new ApplicationException($"The bucket does not exist for profile!");
+
+            BucketCustomConfiguration bucketConfiguration = new(bucket, serviceUrl, storageConfiguration.Files.CustomDomain);
+            collection.AddKeyedSingleton<IAmazonS3>(ServiceKeyConstants.Storage.FileStorage, filesS3Client);
+            collection.AddKeyedSingleton(ServiceKeyConstants.Storage.FileStorage, bucketConfiguration);
+            collection.AddKeyedScoped<IStorageClient, FilesS3StorageClient>(ServiceKeyConstants.Storage.FileStorage);
+            Log.Logger.Information("Created file storage client with bucket configuration of {BucketName} on {ServiceUrl} or {CustomDomain}", bucketConfiguration.Bucket, bucketConfiguration.RegionBasedUrl, bucketConfiguration.CustomDomainUrl ?? "N/A");            
         }
         else
         {
