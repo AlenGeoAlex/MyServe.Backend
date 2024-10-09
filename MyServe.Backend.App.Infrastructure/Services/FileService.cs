@@ -1,7 +1,9 @@
 using MyServe.Backend.App.Application.Dto.Files;
 using MyServe.Backend.App.Application.Features.Files.Create;
 using MyServe.Backend.App.Application.Services;
+using MyServe.Backend.App.Domain.Exceptions.File;
 using MyServe.Backend.App.Domain.Extensions;
+using MyServe.Backend.App.Domain.Models.Files;
 using MyServe.Backend.App.Domain.Repositories;
 using MyServe.Backend.App.Infrastructure.Mapper.File;
 using MyServe.Backend.Common.Abstract;
@@ -14,7 +16,16 @@ public class FileService(IFileRepository fileRepository, IRequestContext request
 {
     
     private static readonly FileMapper FileMapper = new FileMapper();
-    
+
+    public async Task<FileDto?> GetFile(Guid fileId)
+    {
+        var file = await fileRepository.GetByIdAsync(fileId);
+        if (file == null)
+            return null;
+
+        return FileMapper.ToFileDto(file);
+    }
+
     public async Task<FileDto> Create(CreateFileCommand command)
     {
         var file = new File()

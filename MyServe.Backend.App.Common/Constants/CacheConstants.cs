@@ -4,4 +4,5 @@ public static class CacheConstants
 {
     public const string UserCacheKey = "api-user";
     public const string FileListCacheKey = "api-file-list";
+    public const string FileIdCacheKey = "api-file-id";
 }

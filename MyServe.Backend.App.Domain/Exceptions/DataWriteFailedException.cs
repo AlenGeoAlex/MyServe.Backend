@@ -4,7 +4,7 @@ using File = MyServe.Backend.App.Domain.Models.Files.File;
 
 namespace MyServe.Backend.App.Domain.Exceptions;
 
-public class DataWriteFailedException(Type entityType, string stringToMatch) : Exception
+public class DataWriteFailedException(Type entityType, string stringToMatch, Exception? e = null) : Exception(stringToMatch, e)
 {
     public ConstraintInfo ConstraintInfo { get; } = MatchError(entityType, stringToMatch);
 

@@ -1,8 +1,10 @@
 using Dapper;
+using MassTransit.Initializers;
 using Microsoft.Extensions.DependencyInjection;
 using MyServe.Backend.App.Application.Features.Files.List;
 using MyServe.Backend.App.Domain.Exceptions;
 using MyServe.Backend.App.Domain.Extensions;
+using MyServe.Backend.App.Domain.Models.Files;
 using MyServe.Backend.App.Domain.Models.Profile;
 using MyServe.Backend.App.Domain.Repositories;
 using MyServe.Backend.App.Infrastructure.Abstract;
@@ -15,9 +17,35 @@ namespace MyServe.Backend.App.Infrastructure.Repositories;
 
 public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlConnection readOnlyConnection, [FromKeyedServices("read-write-connection")] NpgsqlConnection readWriteDatabase) : AbstractRepository<File>(readOnlyConnection, readWriteDatabase), IFileRepository
 {
-    public override Task<File?> GetByIdAsync(Guid id)
+
+    
+    
+    public override async Task<File?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var file = (await readOnlyConnection.QueryAsync(FileSql.GetById, new {Id = id}))
+            .Select(x =>
+            {
+                string fileTypeRaw = x.type.ToString();
+                return new File()
+                {
+                    Id = x.id,
+                    Name = x.name,
+                    Type = fileTypeRaw!.GetFileTypeFromString()!.Value,
+                    Owner = x.owner,
+                    OwnerProfile = new Profile()
+                    {
+                        Id = x.owner,
+                        FirstName = x.first_name,
+                        LastName = x.last_name
+                    },
+                    TargetSize = x.target_size,
+                    MimeType = x.mime_type,
+                    CreatedAt = x.created_at,
+                    TargetUrl = x.target_url,
+                };
+            }).FirstOrDefault();
+
+        return file;
     }
 
     public override async Task<File> AddAsync(File entity)
@@ -32,7 +60,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                 Type = entity.Type.GetFileTypeAsString(),
                 Owner = entity.Owner,
                 CreatedAt = new NpgSqlDateTimeOffsetParameter(entity.CreatedAt),
-                TargetUrl = entity.TargetUrl,
+                TargetUrl = entity.Type == FileType.Dir ? null : entity.TargetUrl,
                 TargetSize = entity.TargetSize,
                 MimeType = entity.MimeType,
                 Created = entity.Owner,
@@ -40,7 +68,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         }
         catch (Exception e)
         {
-            throw new DataWriteFailedException(typeof(File), e.Message);
+            throw new DataWriteFailedException(typeof(File), e.Message, e);
         }
         return entity;
     }
@@ -73,7 +101,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
             Take = listOptions.Take,
         });
 
-        return HydrateFiles(files);
+        return HydrateListFiles(files);
     }
 
     public async Task<(List<File> files, List<File> parents)> ListFilesWithParent(Guid ownerId, Guid? parentId = null, ListOptions? listOptions = null)
@@ -94,7 +122,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         });
 
         var filesEnumerable = await multGridReader.ReadAsync();
-        var files = HydrateFiles(filesEnumerable);
+        var files = HydrateListFiles(filesEnumerable);
         var parentEnumerable = await multGridReader.ReadAsync();
         var parentList = HydrateParents(parentEnumerable);
         return (files, parentList);
@@ -104,6 +132,8 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
     {
         throw new NotImplementedException();
     }
+
+
 
     #region Hydrations
 
@@ -117,7 +147,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         }).ToList();
     }
 
-    protected List<File> HydrateFiles(IEnumerable<dynamic> dynamic)
+    private List<File> HydrateListFiles(IEnumerable<dynamic> dynamic)
     {
         return dynamic.Select(x =>
         {
@@ -157,7 +187,11 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
     private static class FileSql
     {
         public const string GetById = """
-                                        
+                                        SELECT f."id", "name", parent, "type", "owner", f.created_at, target_url, target_size, mime_type, created,
+                                        p.first_name, p.last_name
+                                        FROM files.file f
+                                        JOIN public.profile p on p.id = f.owner
+                                        WHERE f.id = @id AND is_deleted = false;
                                       """;
 
         public const string Add = """

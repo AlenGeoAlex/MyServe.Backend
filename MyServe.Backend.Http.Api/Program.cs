@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using MyServe.Backend.Api.Extensions;
@@ -62,7 +61,7 @@ public static class Program
         });
         
         app.UseCors("cors"); 
-        //app.UseHttpsRedirection(); 
+        app.UseHttpsRedirection(); 
         app.UseAuthentication(); 
         app.UseRouting(); 
         // app.UseRateLimiter(); 

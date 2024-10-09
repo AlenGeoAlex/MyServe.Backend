@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyServe.Backend.App.Application.Client;
+using MyServe.Backend.App.Application.Features.Files.ById;
 using MyServe.Backend.App.Application.Features.Files.Create;
 using MyServe.Backend.App.Application.Features.Files.List;
 using MyServe.Backend.App.Application.Features.Files.Signed;
@@ -18,13 +19,15 @@ public class FilesController(IMediator mediator, ICacheService cacheService, ILo
 {
 
     [HttpPost]
-    public async Task<IActionResult> CreateFile([FromBody] CreateFileCommand command)
+    public async Task<ActionResult<CreateFileResponse>> CreateFile([FromBody] CreateFileCommand command)
     {
         command.Owner = requestContext.Requester.UserId;
         var fileResponse = await mediator.Send(command);
-        
-        if(fileResponse.File is not null)
+
+        if (fileResponse.File is not null)
+        {
             return CreatedAtAction(nameof(GetFiles), fileResponse, new { id = fileResponse.File.Id });
+        }
 
         if (fileResponse.Message is not null && fileResponse.Message == CreateFileResponse.Duplicate)
             return Conflict();
@@ -32,19 +35,44 @@ public class FilesController(IMediator mediator, ICacheService cacheService, ILo
         return BadRequest(fileResponse.Message);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetFiles([FromQuery] ListFileOptions fileOptions)
+    [HttpGet("{fileId:guid}")]
+    public async Task<ActionResult<GetFileByIdResponse>> GetFile([FromRoute] Guid fileId)
     {
-        requestContext.CacheControl.FrameEndpointCacheKey(CacheConstants.FileListCacheKey, Request.QueryString.ToString());
-        fileOptions.OwnerId = requestContext.Requester.UserId;
+        requestContext.CacheControl.FrameEndpointCacheKey(CacheConstants.FileIdCacheKey, fileId.ToString());
+        var cache = await ScanAsync<GetFileByIdResponse>();
+        if (cache is not null)
+            return cache;
 
-        var listFileResponse = await mediator.Send(fileOptions);
-        return Ok(listFileResponse);
+        var response = await mediator.Send(new GetFileByIdQuery {Id = fileId});
+        if (response is null)
+            return NotFound();
+
+        await CacheAsync(response, TimeSpan.FromMinutes(30));
+        return Ok(response);
     }
 
     [HttpPost("signed")]
-    public async Task<IActionResult> GetSignedUrl([FromBody] CreateSignedUrlCommand command)
+    public async Task<ActionResult<CreateSignedUrlResponse>> GetSignedUrl([FromBody] CreateSignedUrlCommand command)
     {
-        return Ok();
+        var response = await mediator.Send(command);
+        if(response.Success)
+            return Ok(response);
+        
+        return BadRequest(response);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<ListFileResponse>> GetFiles([FromQuery] ListFileOptions fileOptions)
+    {
+        fileOptions.OwnerId = requestContext.Requester.UserId;
+        requestContext.CacheControl.FrameEndpointCacheKey(CacheConstants.FileListCacheKey, fileOptions.OwnerId.ToString(), fileOptions.ParentId.HasValue ? fileOptions.ParentId.Value.ToString() : "undefined", Request.QueryString.ToString());
+        var cache = await ScanAsync<ListFileResponse>();
+        if (cache is not null)
+            return Ok(cache);
+
+        var listFileResponse = await mediator.Send(fileOptions);
+
+        await CacheAsync(listFileResponse);
+        return Ok(listFileResponse);
     }
 }

@@ -189,7 +189,7 @@ public static class BootstrapExtension
         configuration.GetSection("Storage").Bind(storageConfiguration);
         
         HashSet<string> keys = new();
-        if (storageConfiguration.Profile.Type == StorageType.S3)
+        if (storageConfiguration.Profile.Type is StorageType.S3 or StorageType.R2)
         {
             var profileS3ConnectionString = VaultConstants.Storage.S3.EndpointWithPrefix(storageConfiguration.Profile.VaultPrefix);
             var profileS3Region = VaultConstants.Storage.S3.BucketWithPrefix(storageConfiguration.Profile.VaultPrefix);
@@ -206,7 +206,7 @@ public static class BootstrapExtension
         }
 
 
-        if (storageConfiguration.Files.Type == StorageType.S3)
+        if (storageConfiguration.Files.Type is StorageType.S3 or StorageType.R2)
         {
             var fileS3ConnectionString = VaultConstants.Storage.S3.EndpointWithPrefix(storageConfiguration.Files.VaultPrefix);
             var fileS3Region = VaultConstants.Storage.S3.BucketWithPrefix(storageConfiguration.Files.VaultPrefix);
@@ -231,15 +231,22 @@ public static class BootstrapExtension
         await Task.WhenAll(secretTasks.Values);
 
 
-        if (storageConfiguration.Profile.Type == StorageType.S3)
+        if (storageConfiguration.Profile.Type is StorageType.S3 or StorageType.R2)
         {
             var serviceUrl = secretTasks[VaultConstants.Storage.S3.EndpointWithPrefix(storageConfiguration.Profile.VaultPrefix)].Result;
             var accessKey = secretTasks[VaultConstants.Storage.S3.ConnectionAccessKeyWithPrefix(storageConfiguration.Profile.VaultPrefix)].Result;
             var secretKey = secretTasks[VaultConstants.Storage.S3.ConnectionSecretKeyWithPrefix(storageConfiguration.Profile.VaultPrefix)].Result;
             var bucket = secretTasks[VaultConstants.Storage.S3.BucketWithPrefix(storageConfiguration.Profile.VaultPrefix)].Result;
             
-            var profiles3Client = new AmazonS3Client(accessKey, secretKey, RegionEndpoint.APSouth2);
-
+            var profiles3Client = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey), new AmazonS3Config()
+            {
+                ServiceURL = serviceUrl,
+            });
+            if (storageConfiguration.Files.Type == StorageType.R2)
+            {
+                AWSConfigsS3.UseSignatureVersion4 = true;
+                Log.Logger.Information("SDK has been configured to use signature v4");
+            }
             var bucketExists = false;
             try
             {
@@ -265,7 +272,7 @@ public static class BootstrapExtension
             
         }
         
-        if (storageConfiguration.Files.Type == StorageType.S3)
+        if (storageConfiguration.Files.Type is StorageType.S3 or StorageType.R2)
         {
             var serviceUrl = secretTasks[VaultConstants.Storage.S3.EndpointWithPrefix(storageConfiguration.Files.VaultPrefix)].Result;
             var accessKey = secretTasks[VaultConstants.Storage.S3.ConnectionAccessKeyWithPrefix(storageConfiguration.Files.VaultPrefix)].Result;
@@ -278,6 +285,12 @@ public static class BootstrapExtension
                 ServiceURL = serviceUrl,
             });
 
+            if (storageConfiguration.Files.Type == StorageType.R2)
+            {
+                AWSConfigsS3.UseSignatureVersion4 = true;
+                Log.Logger.Information("SDK has been configured to use signature v4");
+            }
+            
             var bucketExists = false;
             try
             {
