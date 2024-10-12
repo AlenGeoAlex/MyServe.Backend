@@ -1,6 +1,6 @@
 /**/bin/
 /**/obj/
-/**/appsettings.json
 /.idea/
 /**/appsettings.Development.json
 /**/Logs/
+/**/**.DotSettings.user
