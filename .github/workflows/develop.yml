@@ -35,7 +35,9 @@ jobs:
           
   deploy-api:
     runs-on: self-hosted
-      - name: Update docker compose from GitHub
+    
+    steps:
+      - name: "Update docker compose from GitHub"
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VM_HOST }}
