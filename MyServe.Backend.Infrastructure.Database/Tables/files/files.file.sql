@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS "files"."file"(
     "mime_type" varchar(255),
     "created" uuid not null,
     "is_deleted" boolean not null default false,
+    "favourite" boolean not null default false,
     constraint "fk_file_parent" foreign key (parent) references files.file (id),
     constraint "fk_file_created" foreign key (created) references public.profile (id),
     constraint "fk_file_owner" foreign key (owner) references public.profile (id),

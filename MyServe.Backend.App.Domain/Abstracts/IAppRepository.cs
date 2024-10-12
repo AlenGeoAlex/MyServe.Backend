@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.JsonPatch;
+
 namespace MyServe.Backend.App.Domain.Abstracts;
 
-public interface IAppRepository<T>
+public interface IAppRepository<T> where T : class
 {
     
     /**
@@ -27,4 +29,9 @@ public interface IAppRepository<T>
      * Deletes an entity by id
      */
     Task DeleteByIdAsync(Guid id);
+    
+    /**
+     * Path the document
+     */
+    Task<T> PatchAsync(Guid id, JsonPatchDocument<T> entity);
 }

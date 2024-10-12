@@ -1,8 +1,7 @@
-using System.Data;
 using System.Net;
 using Dapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.DependencyInjection;
-using MyServe.Backend.Common.Extensions;
 using MyServe.Backend.App.Domain.Exceptions;
 using MyServe.Backend.App.Domain.Models.User;
 using MyServe.Backend.App.Domain.Repositories;
@@ -52,6 +51,12 @@ public class UserOtpRepository([FromKeyedServices("read-only-connection")]Npgsql
     {
         throw new NotImplementedException();
     }
+
+    public override Task<UserOtp> PatchAsync(Guid id, JsonPatchDocument<UserOtp> entity)
+    {
+        throw new NotImplementedException();
+    }
+
 
     public async Task<bool> ValidateOtp(string otp, string emailAddress, string device)
     {

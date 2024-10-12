@@ -21,7 +21,7 @@ public class GetFileByIdQueryHandler(
 {
     public async Task<GetFileByIdResponse?> Handle(GetFileByIdQuery request, CancellationToken cancellationToken)
     {
-        var file = await fileService.GetFile(request.Id);
+        var file = await fileService.GetFileAsync(request.Id);
         if(file is null)
             return null;
         

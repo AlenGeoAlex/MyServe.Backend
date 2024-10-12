@@ -1,5 +1,6 @@
 using Dapper;
 using MassTransit.Initializers;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.DependencyInjection;
 using MyServe.Backend.App.Application.Features.Files.List;
 using MyServe.Backend.App.Domain.Exceptions;
@@ -17,9 +18,6 @@ namespace MyServe.Backend.App.Infrastructure.Repositories;
 
 public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlConnection readOnlyConnection, [FromKeyedServices("read-write-connection")] NpgsqlConnection readWriteDatabase) : AbstractRepository<File>(readOnlyConnection, readWriteDatabase), IFileRepository
 {
-
-    
-    
     public override async Task<File?> GetByIdAsync(Guid id)
     {
         var file = (await readOnlyConnection.QueryAsync(FileSql.GetById, new {Id = id}))
@@ -42,6 +40,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                     MimeType = x.mime_type,
                     CreatedAt = x.created_at,
                     TargetUrl = x.target_url,
+                    Favourite = x.favourite
                 };
             }).FirstOrDefault();
 
@@ -73,9 +72,28 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         return entity;
     }
 
-    public override Task UpdateAsync(File entity)
+    public override async Task UpdateAsync(File entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var updatedFileCount = await readWriteDatabase.ExecuteAsync(FileSql.UpdateFile, new
+            {
+                entity.Id,
+                entity.Name,
+                entity.Favourite,
+                ModifiedAt = new NpgSqlDateTimeOffsetParameter(),
+            });
+            
+            if(updatedFileCount <= 0)
+                throw new DataWriteFailedException(typeof(File), "Non existing");
+        }
+        catch (Exception e)
+        {
+            if (e is DataWriteFailedException)
+                throw;
+            
+            throw new DataWriteFailedException(typeof(File), e.Message, e);
+        }
     }
 
     public override Task DeleteAsync(File entity)
@@ -83,9 +101,27 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         throw new NotImplementedException();
     }
 
-    public override Task DeleteByIdAsync(Guid id)
+    public override async Task DeleteByIdAsync(Guid id)
     {
         throw new NotImplementedException();
+    }
+
+    public override async Task<File> PatchAsync(Guid id, JsonPatchDocument<File> entity)
+    {
+        try
+        {
+            var idEntity = await GetByIdAsync(id);
+            if (idEntity is null)
+                throw new NotFoundException(id, typeof(File));
+        
+            entity.ApplyTo(idEntity);
+            await UpdateAsync(idEntity);
+            return idEntity;
+        }
+        catch (Exception e)
+        {
+            throw new DataWriteFailedException(typeof(File), e.Message, e);
+        }
     }
 
     public async Task<List<File>> ListFiles(Guid ownerId, Guid? parentId = null, ListOptions? listOptions = null)
@@ -128,6 +164,35 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         return (files, parentList);
     }
 
+    public Task HardDeleteAsync(List<Guid> ids)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<List<File>> SoftDeleteAsync(Guid id)
+    {
+        try
+        {
+            var files = (await readWriteDatabase.QueryAsync(FileSql.SoftDeleteById, new {Id = id}))
+                .Select(x =>
+                {
+                    string fileTypeRaw = x.type.ToString();
+                    return new File()
+                    {
+                        Id = x.id,
+                        Name = x.name,
+                        Type = fileTypeRaw!.GetFileTypeFromString()!.Value,
+                    };
+                }).ToList();
+
+            return files;
+        }
+        catch (Exception e)
+        {
+            throw new DataWriteFailedException(typeof(File), e.Message, e);
+        }
+    }
+
     public Task<List<File>> GetParents(Guid childId)
     {
         throw new NotImplementedException();
@@ -167,6 +232,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                 TargetSize = x.target_size,
                 MimeType = x.mime_type,
                 CreatedAt = x.created_at,
+                Favourite = x.favourite,
             };
 
 
@@ -187,7 +253,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
     private static class FileSql
     {
         public const string GetById = """
-                                        SELECT f."id", "name", parent, "type", "owner", f.created_at, target_url, target_size, mime_type, created,
+                                        SELECT f."id", "name", parent, "type", "owner", f.created_at, target_url, target_size, mime_type, created, f.favourite ,
                                         p.first_name, p.last_name
                                         FROM files.file f
                                         JOIN public.profile p on p.id = f.owner
@@ -220,7 +286,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
             ((isParentPresent, orderBy, orderByDirection) =>
                 {
                     var query = """
-                                SELECT f."id", f."name", f."type", f."owner", p.first_name, p.last_name, f."target_size", f."mime_type", f."created_at", pf.id as "parent_id", pf.name as "parent_name" 
+                                SELECT f."id", f."name", f."type", f."owner", p.first_name, p.last_name, f."target_size", f."mime_type", f."created_at", pf.id as "parent_id", pf.name as "parent_name", f.favourite
                                 FROM "files"."file" f
                                 join "public".profile p on p.id = f.owner
                                 left join "files".file pf on pf.id = f.parent
@@ -239,5 +305,13 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                 }
             );
 
+        public const string UpdateFile = """
+                                            UPDATE files.file SET "name" = @Name, "favourite" = @Favourite
+                                            WHERE "id" = @Id AND is_deleted = false
+                                          """;
+
+        public const string SoftDeleteById = """
+                                                SELECT * FROM files."delete_recursive"(@Id);
+                                             """;
     }
 }

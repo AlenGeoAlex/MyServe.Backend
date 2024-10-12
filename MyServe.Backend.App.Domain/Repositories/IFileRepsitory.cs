@@ -11,4 +11,6 @@ public interface IFileRepository : IAppRepository<File>
     Task<List<File>> GetParents(Guid childId);
 
     Task<(List<File> files, List<File> parents)> ListFilesWithParent(Guid ownerId, Guid? parentId = null, ListOptions? listOptions = null);
+    Task HardDeleteAsync(List<Guid> ids);
+    Task<List<File>> SoftDeleteAsync(Guid id);
 }

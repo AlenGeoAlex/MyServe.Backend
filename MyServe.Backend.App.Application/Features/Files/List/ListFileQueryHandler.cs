@@ -7,7 +7,7 @@ public class ListFileQueryHandler(IFileService fileService) : IRequestHandler<Li
 {
     public async Task<ListFileResponse> Handle(ListFileOptions request, CancellationToken cancellationToken)
     {
-        var listMyFiles = await fileService.ListMyFiles(request.OwnerId, request.ParentId, request);
+        var listMyFiles = await fileService.ListMyFilesAsync(request.OwnerId, request.ParentId, request);
 
         return new ListFileResponse()
         {

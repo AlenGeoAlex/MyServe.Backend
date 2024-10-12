@@ -1,5 +1,6 @@
 using System.Data;
 using Dapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.DependencyInjection;
 using MyServe.Backend.App.Domain.Abstracts;
 using MyServe.Backend.App.Domain.Models.User;
@@ -50,6 +51,11 @@ public class RefreshTokenRepository([FromKeyedServices("read-only-connection")]N
     public override async Task DeleteByIdAsync(Guid id)
     {
         await readWriteDatabase.ExecuteAsync(RefreshTokenSql.DeleteTokenById, new { RefreshTokenId = id });
+    }
+
+    public override Task<RefreshToken> PatchAsync(Guid id, JsonPatchDocument<RefreshToken> entity)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<bool> ValidateRefreshToken(RefreshToken token)

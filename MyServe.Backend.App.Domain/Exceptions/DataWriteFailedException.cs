@@ -21,6 +21,7 @@ public class DataWriteFailedException(Type entityType, string stringToMatch, Exc
                     new ConstraintInfo("Parent is not a directory", "The provided parent directory reference is not a valid directory.", HttpStatusCode.InternalServerError),
                     new ConstraintInfo("No permission in parent", "You are not the owner of the parent directory.", HttpStatusCode.Forbidden),
                     new ConstraintInfo("Parent file is soft deleted", "Parent field is marked to be deleted.", HttpStatusCode.InternalServerError),
+                    new ConstraintInfo("Non existing", "The file you requested is not found.", HttpStatusCode.NotFound),
                 ]
             },
             {

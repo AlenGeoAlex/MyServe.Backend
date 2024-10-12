@@ -1,10 +1,15 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MyServe.Backend.App.Application.Client;
+using MyServe.Backend.App.Application.Dto.Files;
 using MyServe.Backend.App.Application.Features.Files.ById;
 using MyServe.Backend.App.Application.Features.Files.Create;
+using MyServe.Backend.App.Application.Features.Files.Delete;
 using MyServe.Backend.App.Application.Features.Files.List;
+using MyServe.Backend.App.Application.Features.Files.Patch;
 using MyServe.Backend.App.Application.Features.Files.Signed;
 using MyServe.Backend.Common.Abstract;
 using MyServe.Backend.Common.Constants;
@@ -74,5 +79,28 @@ public class FilesController(IMediator mediator, ICacheService cacheService, ILo
 
         await CacheAsync(listFileResponse);
         return Ok(listFileResponse);
+    }
+
+    [EnableRateLimiting(RateLimitingPolicyConstants.RateLimit1To1)]
+    [HttpPatch("{fileId:guid}")]
+    public async Task<ActionResult<FileDto>> PatchFiles([FromRoute] Guid fileId, [FromBody] JsonPatchDocument<FileDto> jsonPatchDocument)
+    {
+        var fileDto = await mediator.Send(new FilePatchCommand()
+        {
+            Id = fileId,
+            Document = jsonPatchDocument
+        });
+        return Ok(fileDto);
+    }
+
+    [HttpDelete("{fileId:guid}")]
+    public async Task<ActionResult<DeleteFileResponse>> DeleteFile(Guid fileId)
+    {
+        var command = new DeleteFileCommand()
+        {
+            Id = fileId
+        };
+        var response = await mediator.Send(command);
+        return NoContent();
     }
 }

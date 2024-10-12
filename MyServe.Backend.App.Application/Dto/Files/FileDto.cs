@@ -18,4 +18,5 @@ public class FileDto
     public string? MimeType { get; set; }    
     public List<object> AccessControl { get; } = [];
     public FileDto Parent { get; set; }
+    public bool Favourite { get; set; }
 }

@@ -11,7 +11,7 @@ public class CreateProfileCommandHandler(IReadWriteUnitOfWork unitOfWork, IProfi
         try
         {
             await using var uow = unitOfWork;
-            var newProfile = await profileService.CreateNewProfile(request, cancellationToken);
+            var newProfile = await profileService.CreateNewProfileAsync(request, cancellationToken);
             await uow.CommitAsync();
             return new CreateProfileResponse()
             {

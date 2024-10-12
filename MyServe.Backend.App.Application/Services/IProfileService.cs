@@ -7,5 +7,5 @@ public interface IProfileService
 {
     Task<ProfileDto?> GetProfileAsync(Guid userId, CancellationToken cancellationToken = default);
     
-    Task<ProfileDto> CreateNewProfile(CreateProfileCommand command, CancellationToken cancellationToken = default);
+    Task<ProfileDto> CreateNewProfileAsync(CreateProfileCommand command, CancellationToken cancellationToken = default);
 }

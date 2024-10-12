@@ -9,6 +9,7 @@ using MyServe.Backend.App.Application.Extensions;
 using MyServe.Backend.App.Domain.Extensions;
 using MyServe.Backend.App.Infrastructure.Extensions;
 using Serilog;
+using BootstrapExtensions = MyServe.Backend.Api.Extensions.BootstrapExtensions;
 
 namespace MyServe.Backend.Api;
 
@@ -28,7 +29,10 @@ public static class Program
         var secretClient = await builder.Services.InitializeSecretClient(builder.Configuration);
 
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options =>
+        {
+            options.InputFormatters.Insert(0, BootstrapExtensions.GetJsonPatchInputFormatter());
+        }).AddNewtonsoftJson();
         builder.Services.Configure<ApiBehaviorOptions>(options =>
         {
             options.SuppressModelStateInvalidFilter = true;
@@ -64,7 +68,7 @@ public static class Program
         app.UseHttpsRedirection(); 
         app.UseAuthentication(); 
         app.UseRouting(); 
-        // app.UseRateLimiter(); 
+        app.UseRateLimiter(); 
         app.UseAuthorization();
         app.UseMiddleware<CacheMiddleware>();
         app.UseMiddleware<ExceptionHandlingMiddleware>();

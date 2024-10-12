@@ -1,5 +1,5 @@
-using System.Data;
 using Dapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.DependencyInjection;
 using MyServe.Backend.App.Domain.Models.User;
 using MyServe.Backend.App.Domain.Repositories;
@@ -36,6 +36,11 @@ public class UserRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
     }
 
     public override Task DeleteByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<User> PatchAsync(Guid id, JsonPatchDocument<User> entity)
     {
         throw new NotImplementedException();
     }

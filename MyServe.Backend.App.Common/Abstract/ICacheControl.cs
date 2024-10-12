@@ -10,7 +10,12 @@ public interface ICacheControl
     /**
      * Add keys to the cache module
      */
-    void AddKeysToExpire(params string[] keys);
+    void AddKeyToExpire(params string[] keys);
+    
+    /**
+     * Removes the exact key to delete 
+     */
+    void AddExactKeyToExpire(params string[] keys);
     
     /**
      * Cache Key of the particular request

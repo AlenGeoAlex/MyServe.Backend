@@ -19,9 +19,9 @@ public class CreateFileCommandHandler(IFileService fileService, IReadWriteUnitOf
         await using var uow = await readWriteUnitOfWork.StartTransactionAsync();
         try
         {
-            var response = await fileService.Create(request);
+            var response = await fileService.CreateAsync(request);
             await uow.CommitAsync();
-            requestContext.CacheControl.AddKeysToExpire(CacheConstants.FileListCacheKey, request.Owner.ToString(), request.ParentId.HasValue ? request.ParentId.Value.ToString() : "undefined");
+            requestContext.CacheControl.AddKeyToExpire(CacheConstants.FileListCacheKey, request.Owner.ToString(), request.ParentId.HasValue ? request.ParentId.Value.ToString() : "undefined");
             return new CreateFileResponse()
             {
                 File = response

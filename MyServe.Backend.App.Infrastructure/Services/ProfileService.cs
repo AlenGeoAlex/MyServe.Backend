@@ -32,7 +32,7 @@ public class ProfileService(
         return profileDto;
     }
 
-    public async Task<ProfileDto> CreateNewProfile(CreateProfileCommand command, CancellationToken cancellationToken = default)
+    public async Task<ProfileDto> CreateNewProfileAsync(CreateProfileCommand command, CancellationToken cancellationToken = default)
     {
         var profile = new Profile(){
             Id = command.ProfileId,

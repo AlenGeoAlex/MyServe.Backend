@@ -1,8 +1,11 @@
 using FluentValidation;
+using Microsoft.AspNetCore.JsonPatch;
+using MyServe.Backend.App.Application.Dto.Files;
 using MyServe.Backend.App.Application.Features.Files.Create;
 using MyServe.Backend.App.Application.Features.Files.Signed;
 using MyServe.Backend.App.Domain.Models.Files;
 using MyServe.Backend.Common.Constants;
+using File = MyServe.Backend.App.Domain.Models.Files.File;
 
 namespace MyServe.Backend.Api.Validators;
 
@@ -58,5 +61,20 @@ class FilePreSignedUrlValidator : AbstractValidator<CreateSignedUrlCommand>
             .When(x => PublicSignedUrlRequestType.PublicFile.ToString().Equals(x.Source, StringComparison.OrdinalIgnoreCase))
             .WithMessage("Signed Url's for files will not be allowed to be greater than 15 minutes");
         
+    }
+}
+
+class PatchValidator : AbstractValidator<JsonPatchDocument<FileDto>>
+{
+    public PatchValidator()
+    {
+        RuleFor(x => x)
+            .Must(x => ValidatePatchBody(x) == null)
+            .WithMessage(ValidatePatchBody);
+    }
+
+    private string? ValidatePatchBody(JsonPatchDocument<FileDto> jsonPatchDocument)
+    {
+        return null;
     }
 }

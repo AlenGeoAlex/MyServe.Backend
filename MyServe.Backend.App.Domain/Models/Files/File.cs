@@ -14,4 +14,5 @@ public class File
     public Profile.Profile? OwnerProfile { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public Guid Created { get; set; }
+    public bool Favourite { get; set; }
 }

@@ -1,5 +1,10 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyServe.Backend.Common.Abstract;
 using MyServe.Backend.Common.Constants;
@@ -16,6 +21,7 @@ public static class BootstrapExtensions
         services.AddValidatorsFromAssembly(typeof(BootstrapExtensions).Assembly);
         await services.ConfigureTokenValidation(secretClient);
         ConfigureCors(services);
+        services.BuildRateLimiter();
         return services;
     }
 
@@ -54,6 +60,37 @@ public static class BootstrapExtensions
                 builder.AllowCredentials();
                 builder.AllowAnyHeader();
                 builder.SetIsOriginAllowed(_ => true);
+            });
+        });
+        return services;
+    }
+    
+    public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+    {
+        var builder = new ServiceCollection()
+            .AddLogging()
+            .AddMvc()
+            .AddNewtonsoftJson()
+            .Services.BuildServiceProvider();
+
+        return builder
+            .GetRequiredService<IOptions<MvcOptions>>()
+            .Value
+            .InputFormatters
+            .OfType<NewtonsoftJsonPatchInputFormatter>()
+            .First();
+    }
+
+    private static IServiceCollection BuildRateLimiter(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter(policyName: RateLimitingPolicyConstants.RateLimit1To1, policyOptions =>
+            {
+                policyOptions.PermitLimit = 1;
+                policyOptions.Window = TimeSpan.FromSeconds(1);
+                policyOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                policyOptions.QueueLimit = 20;
             });
         });
         return services;

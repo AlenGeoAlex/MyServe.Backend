@@ -9,18 +9,21 @@ public class CacheControl : ICacheControl
     
     public IReadOnlySet<string> ExpiryKeys => _expiryKeys;
     
-    public void AddKeysToExpire(params string[] keys)
+    public void AddKeyToExpire(params string[] keys)
     {
-        foreach (var key in keys)
+        var finalKey = string.Join("-", keys);
+        if(!finalKey.EndsWith("-*"))
         {
-            var finalKey = key;
-            if(!finalKey.EndsWith("-*"))
-            {
-                finalKey += "-*";
-            }
-
-            _expiryKeys.Add(finalKey);
+            finalKey += "-*";
         }
+
+        _expiryKeys.Add(finalKey);
+    }
+
+    public void AddExactKeyToExpire(params string[] keys)
+    {
+        var finalKey = string.Join("-", keys);
+        _expiryKeys.Add(finalKey);
     }
 
     public string EndpointCacheKey => _cacheKey;
