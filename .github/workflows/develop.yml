@@ -7,6 +7,8 @@ jobs:
   
   build-api:
     runs-on: self-hosted
+    env:
+      DOTNET_INSTALL_DIR: "./.dotnet"
     
     steps:
       - name: Checkout Repository
