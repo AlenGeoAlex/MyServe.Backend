@@ -2,9 +2,8 @@ using Infisical.Sdk;
 using Microsoft.Extensions.Configuration;
 using MyServe.Backend.Common.Abstract;
 using MyServe.Backend.Common.Exceptions;
-using Supabase.Interfaces;
 
-namespace MyServe.Backend.Common.Impl;
+namespace MyServe.Backend.Common.Impl.Vault;
 
 public class InfisicalSecretClient(IConfiguration configuration) : ISecretClient
 {
@@ -21,11 +20,11 @@ public class InfisicalSecretClient(IConfiguration configuration) : ISecretClient
         if (_client != null)
             return;
         
-        var serviceToken = Configuration["SecretServiceToken"];
-        _projectId = Configuration["SecretClientProjectId"] ?? DefaultProjectId;
+        var serviceToken = Configuration["Vault:SecretServiceToken"];
+        _projectId = Configuration["Vault:SecretClientProjectId"] ?? throw new ArgumentNullException($"ProjectId is missing");
         
-        if(string.IsNullOrWhiteSpace(serviceToken))
-            throw new ApplicationException("Service Token is missing.");
+        if(string.IsNullOrWhiteSpace(serviceToken) || string.IsNullOrWhiteSpace(_projectId))
+            throw new ApplicationException("Service Token and ProjectId is missing is missing.");
         
         var settings = new ClientSettings
         {
