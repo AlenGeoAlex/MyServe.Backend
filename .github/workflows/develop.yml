@@ -29,8 +29,3 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push alenalex/myserve-http-api:master
-  
-  deploye-api:
-    runs-on: ubuntu-22.04
-    steps:
-      - 
