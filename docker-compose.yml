@@ -9,3 +9,5 @@ services:
     volumes:
       - /home/my-serve/api/appsettings.json:/app/appsettings.json
       - /home/my-serve/api/Logs/:/app/Logs/
+    ports:
+      - "45012:80"       
