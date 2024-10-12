@@ -35,8 +35,12 @@ jobs:
           
   deploy-api:
     runs-on: ubuntu-22.04
+    needs: ["build-api"]
     
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
       - name: "Update docker compose from GitHub"
         uses: appleboy/scp-action@master
         with:
