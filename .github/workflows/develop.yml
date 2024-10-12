@@ -32,3 +32,22 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push alenalex/myserve-http-api:master
+          
+  deploy-api:
+    runs-on: self-hosted
+    steps:
+      - name: Get IP Address
+        id: get_ip
+        run: echo "IP_ADDRESS=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
+
+      - name: Print IP Address
+        run: 'echo "The IP Address is: ${{ env.IP_ADDRESS }}"'       
+        
+      - name: Update docker compose from Github
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "/etc/opt/my-serve/"
