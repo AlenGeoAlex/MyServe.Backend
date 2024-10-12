@@ -5,7 +5,7 @@ on:
     
 jobs:
   build-api:
-    runs-on: self-hosted
+    runs-on: ['self-hosted', 'Linux', 'ARM64']
     
     steps:
       - name: Checkout Repository
