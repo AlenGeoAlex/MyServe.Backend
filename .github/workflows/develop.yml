@@ -35,8 +35,7 @@ jobs:
           
   deploy-api:
     runs-on: self-hosted
-    steps:
-      - name: Update docker compose from Github
+      - name: Update docker compose from GitHub
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VM_HOST }}
@@ -44,4 +43,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.yml"
-          target: "/etc/opt/my-serve/"
+          target: "/tmp/docker-compose.yml"  # Copy to a temporary location
+
+      - name: Move docker-compose to final destination
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }} "sudo mv /tmp/docker-compose.yml /etc/opt/my-serve/docker-compose.yml"
