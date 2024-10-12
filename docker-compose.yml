@@ -7,5 +7,5 @@ services:
     environment:
       - ASPNETCORE_URLS=http://*:80
     volumes:
-      - /etc/opt/my-serve/api/appsettings.json:/app/appsettings.json
-      - /etc/opt/my-serve/api/Logs/:/app/Logs/
+      - /home/my-serve/my-serve/api/appsettings.json:/app/appsettings.json
+      - /home/my-serve/my-serve/api/Logs/:/app/Logs/
