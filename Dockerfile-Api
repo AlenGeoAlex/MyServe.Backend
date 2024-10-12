@@ -16,6 +16,10 @@ COPY ["MyServe.Backend.App.Infrastructure/MyServe.Backend.App.Infrastructure.csp
 
 # Restore dependencies
 RUN dotnet restore "MyServe.Backend.Http.Api/MyServe.Backend.Http.Api.csproj"
+RUN dotnet restore "MyServe.Backend.App.Common/MyServe.Backend.App.Common.csproj"
+RUN dotnet restore "MyServe.Backend.App.Application/MyServe.Backend.App.Application.csproj"
+RUN dotnet restore "MyServe.Backend.App.Domain/MyServe.Backend.App.Domain.csproj"
+RUN dotnet restore "MyServe.Backend.App.Infrastructure/MyServe.Backend.App.Infrastructure.csproj"
 COPY . .
 
 # Build the application

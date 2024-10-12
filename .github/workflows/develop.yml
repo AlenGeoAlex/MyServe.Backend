@@ -34,7 +34,7 @@ jobs:
           docker push alenalex/myserve-http-api:master
           
   deploy-api:
-    runs-on: self-hosted
+    runs-on: ubuntu-22.04
     
     steps:
       - name: "Update docker compose from GitHub"
