@@ -60,9 +60,9 @@ jobs:
         run: |
           docker push alenalex/myserve-worker-message-consumer:master
   
-  deploy-api:
+  deploy:
     runs-on: ubuntu-22.04
-    needs: ["build-api"]
+    needs: ["build-api", "build-consumer-job"]
     
     steps:
       - name: Checkout Repository
