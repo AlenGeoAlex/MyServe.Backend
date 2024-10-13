@@ -16,6 +16,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     [HttpPost("otp")]
     public async Task<ActionResult<CreateOtpResponse>> CreateOtp([FromBody] CreateOtpCommand createOtpCommand)
     {
+        createOtpCommand.Origin = Request.Headers.Origin.ToString();
         var response = await mediator.Send(createOtpCommand);
         if (!response.Success)
             return BadRequest(response);
