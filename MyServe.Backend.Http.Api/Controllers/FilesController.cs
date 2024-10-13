@@ -31,7 +31,7 @@ public class FilesController(IMediator mediator, ICacheService cacheService, ILo
 
         if (fileResponse.File is not null)
         {
-            return CreatedAtAction(nameof(GetFiles), fileResponse, new { id = fileResponse.File.Id });
+            return CreatedAtAction(nameof(GetFiles), fileResponse, fileResponse);
         }
 
         if (fileResponse.Message is not null && fileResponse.Message == CreateFileResponse.Duplicate)

@@ -40,7 +40,8 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                     MimeType = x.mime_type,
                     CreatedAt = x.created_at,
                     TargetUrl = x.target_url,
-                    Favourite = x.favourite
+                    Favourite = x.favourite,
+                    ParentId = x.parent
                 };
             }).FirstOrDefault();
 

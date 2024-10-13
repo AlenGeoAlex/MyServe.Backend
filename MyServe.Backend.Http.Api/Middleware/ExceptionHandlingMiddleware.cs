@@ -38,7 +38,7 @@ public class ExceptionHandlingMiddleware(
         if (exceptionDetail.StatusCode is < 500 and >= 300 )
         {
             context.Response.Headers["MySe-Code"] = exceptionDetail.ErrorCode.ToString();
-            context.Response.Headers["MySe-Message"] = exceptionDetail.Message;
+            //context.Response.Headers["MySe-Message"] = exceptionDetail.Message;
         }
 
         if (exceptionDetail is { StatusCode: 401, Type: "Access Token Validation" })

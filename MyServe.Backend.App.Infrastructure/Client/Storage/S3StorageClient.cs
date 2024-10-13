@@ -113,7 +113,7 @@ public abstract class S3StorageClient(IAmazonS3 s3Client, ILogger logger, Bucket
         }
 
         var deletionResponse = await s3Client.DeleteObjectsAsync(deleteObjectsRequest);
-        logger.Information("The deletion request has been completed and has charged {Value}",deletionResponse.RequestCharged.Value);
+        logger.Information("The deletion request has been completed and has charged {Value}",deletionResponse.RequestCharged?.Value);
         
         deletionResponse.DeleteErrors.ForEach(x =>
         {
