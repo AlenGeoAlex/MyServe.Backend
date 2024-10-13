@@ -42,7 +42,7 @@ public class EmailTemplate(string templateKey, string subject)
         return new EmailContent()
         {
             HtmlBody = tempBody,
-            Subject = subject,
+            Subject = tempSubject,
         };
     }
 
