@@ -31,7 +31,7 @@ public class SendValidationEmailConsumer(IEmailClient emailClient, ILogger logge
                 .AppendPathSegment("callback")
                 .AppendPathSegment("otp")
                 .SetQueryParam("code", requestEmailValidationCommand.Code)
-                .SetFragment(context.Message.CreatedAt.ToString());
+                .SetQueryParam("expiry", context.Message.CreatedAt.AddMinutes(AppConfigurations.Auth.OtpValidityDurationInMinutes));
 
             subjectPlaceholders.Add(EmailPlaceholdersConstants.Subject.ValidateOtp.Code, requestEmailValidationCommand.Code);
         
