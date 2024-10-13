@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION files."delete_recursive"(fileId uuid)
-    RETURNS TABLE(id uuid, name varchar(100), type files.filetype) AS $$
+    RETURNS TABLE(id uuid, name varchar(100), type files.filetype, target_url varchar(255)) AS $$
 DECLARE
     child RECORD;
 BEGIN
@@ -23,7 +23,7 @@ BEGIN
         WHERE f.id = delete_recursive.fileId;
 
         -- Return the current file's details
-        RETURN QUERY SELECT f.id, f.name, f.type
+        RETURN QUERY SELECT f.id, f.name, f.type, f.target_url
                      FROM files."file" f
                      WHERE f.id = delete_recursive.fileId;
     ELSE

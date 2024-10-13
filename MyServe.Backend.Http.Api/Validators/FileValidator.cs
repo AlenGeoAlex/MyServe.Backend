@@ -38,27 +38,27 @@ class FilePreSignedUrlValidator : AbstractValidator<CreateSignedUrlCommand>
             .NotEmpty()
             .MaximumLength(100);
         
-        RuleFor(x => x.Source).IsEnumName(typeof(PublicSignedUrlRequestType));
+        RuleFor(x => x.Source).IsEnumName(typeof(FileSource));
         RuleFor(x => x.DurationInMinutes)
             .GreaterThan(0);
         
         // Request to upload profile image must be <= 3 mins in duration
         RuleFor(x => x.DurationInMinutes)
             .Must(x => x < 3)
-            .When(x => PublicSignedUrlRequestType.Profile.ToString()
+            .When(x => FileSource.Profile.ToString()
                 .Equals(x.Source, StringComparison.OrdinalIgnoreCase))
             .WithMessage("Signed Url's for profile will not be allowed to be greater than 3 minutes");
 
         // Request to upload my files should be <= 60 mins
         RuleFor(x => x.DurationInMinutes)
             .Must(x => x <= 60)
-            .When(x => PublicSignedUrlRequestType.Files.ToString().Equals(x.Source, StringComparison.OrdinalIgnoreCase))
+            .When(x => FileSource.Files.ToString().Equals(x.Source, StringComparison.OrdinalIgnoreCase))
             .WithMessage("Signed Url's for files will not be allowed to be greater than 60 minutes");
         
         // Request to upload custom files should be <= 15 mins
         RuleFor(x => x.DurationInMinutes)
             .Must(x => x <= 15)
-            .When(x => PublicSignedUrlRequestType.PublicFile.ToString().Equals(x.Source, StringComparison.OrdinalIgnoreCase))
+            .When(x => FileSource.PublicFile.ToString().Equals(x.Source, StringComparison.OrdinalIgnoreCase))
             .WithMessage("Signed Url's for files will not be allowed to be greater than 15 minutes");
         
     }

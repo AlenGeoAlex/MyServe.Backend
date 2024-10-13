@@ -1,6 +1,6 @@
 namespace MyServe.Backend.Common.Constants;
 
-public enum PublicSignedUrlRequestType
+public enum FileSource
 {
     Profile,
     Files,

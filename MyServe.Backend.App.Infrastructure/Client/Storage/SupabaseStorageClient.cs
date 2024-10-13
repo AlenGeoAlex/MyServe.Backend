@@ -40,6 +40,11 @@ public class SupabaseStorageClient(Supabase.Client supabaseClient, ILogger logge
         throw new NotImplementedException();
     }
 
+    public Task<IEnumerable<Uri>> DeleteMultipleAsync(IEnumerable<Uri> uris)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Uri> GeneratePreSignedUrlAsync(SignedStorageAccessOptions accessOptions, params string[] filePath)
     {
         throw new NotImplementedException();

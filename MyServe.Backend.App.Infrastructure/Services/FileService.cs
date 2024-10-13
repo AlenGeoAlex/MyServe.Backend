@@ -1,22 +1,23 @@
+using MassTransit;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using MyServe.Backend.App.Application.Dto.Files;
 using MyServe.Backend.App.Application.Features.Files.Create;
 using MyServe.Backend.App.Application.Features.Files.Delete;
 using MyServe.Backend.App.Application.Features.Files.Patch;
+using MyServe.Backend.App.Application.Messages.Files;
 using MyServe.Backend.App.Application.Services;
-using MyServe.Backend.App.Domain.Exceptions.File;
 using MyServe.Backend.App.Domain.Extensions;
-using MyServe.Backend.App.Domain.Models.Files;
 using MyServe.Backend.App.Domain.Repositories;
 using MyServe.Backend.App.Infrastructure.Mapper.File;
 using MyServe.Backend.Common.Abstract;
+using MyServe.Backend.Common.Constants;
 using MyServe.Backend.Common.Options;
 using File = MyServe.Backend.App.Domain.Models.Files.File;
 
 namespace MyServe.Backend.App.Infrastructure.Services;
 
-public class FileService(IFileRepository fileRepository, IRequestContext requestContext) : IFileService
+public class FileService(IFileRepository fileRepository, IRequestContext requestContext, IPublishEndpoint publishEndpoint) : IFileService
 {
     
     private static readonly FileMapper FileMapper = new FileMapper();
@@ -69,11 +70,22 @@ public class FileService(IFileRepository fileRepository, IRequestContext request
     public async Task<List<FileDto>> SoftDeleteAsync(DeleteFileCommand deleteFileCommand)
     {
         var deletedFiles = await fileRepository.SoftDeleteAsync(deleteFileCommand.Id);
+        await SendDeletionCommand(new ObjectDeleteionEvent()
+        {
+            FileSource = FileSource.Files,
+            UserId = requestContext.Requester.UserId,
+            Files = deletedFiles.ToDictionary(x => x.Id, x => x.TargetUrl)
+        });
         return deletedFiles.Select(x => FileMapper.ToFileDto(x)).ToList();
     }
 
-    public Task<FileDto> HardDeleteAsync(List<Guid> fileIds)
+    public async Task HardDeleteAsync(List<Guid> fileIds)
     {
-        throw new NotImplementedException();
+        await fileRepository.HardDeleteAsync(fileIds);
+    }
+
+    private async Task SendDeletionCommand(ObjectDeleteionEvent deletionRequest)
+    {
+        await publishEndpoint.Publish(deletionRequest);
     }
 }

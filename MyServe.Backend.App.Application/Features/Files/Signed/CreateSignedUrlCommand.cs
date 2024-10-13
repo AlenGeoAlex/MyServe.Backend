@@ -10,7 +10,7 @@ public class CreateSignedUrlCommand : IAppRequest<CreateSignedUrlResponse>
     public long DurationInMinutes { get; set; }
 
     public TimeSpan Duration => TimeSpan.FromMinutes(DurationInMinutes);
-    public PublicSignedUrlRequestType SourceParsed => Enum.Parse<PublicSignedUrlRequestType>(Source, true);
+    public FileSource SourceParsed => Enum.Parse<FileSource>(Source, true);
 
     #region Specifics
 

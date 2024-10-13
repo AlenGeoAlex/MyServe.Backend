@@ -18,7 +18,7 @@ public class CreateSignedUrlCommandHandler(
     {
         return request.SourceParsed switch
         {
-            PublicSignedUrlRequestType.Files => await ForFile(request, cancellationToken),
+            FileSource.Files => await ForFile(request, cancellationToken),
             _ => new CreateSignedUrlResponse()
             {
                 Success = false,

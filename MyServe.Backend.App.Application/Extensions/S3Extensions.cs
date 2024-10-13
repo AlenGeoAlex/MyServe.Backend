@@ -38,7 +38,7 @@ public static class S3Extensions
             key = string.Join("/", keyPath.Skip(1));
         }
 
-        return new StoredObjectInfo(bucketName, key, uri.ToString());
+        return new StoredObjectInfo(bucketName, key, uri);
     }
     
 }

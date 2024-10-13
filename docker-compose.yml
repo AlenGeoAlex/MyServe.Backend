@@ -1,6 +1,4 @@
-﻿version: '3.4'
-
-services:
+﻿services:
   my-serve-api:
     image: alenalex/myserve-http-api:master
     restart: on-failure
@@ -10,4 +8,10 @@ services:
       - /home/my-serve/api/appsettings.json:/app/appsettings.json
       - /home/my-serve/api/Logs/:/app/Logs/
     ports:
-      - "45012:80"       
+      - "45012:80"
+  my-serve-worker-message-consumer:
+    image: alenalex/myserve-worker-message-consumer:master
+    restart: on-failure
+    volumes:
+      - /home/my-serve/worker-message-consumer/appsettings.json:/app/appsettings.json
+      - /home/my-serve/worker-message-consumer/Logs/:/app/Logs/    

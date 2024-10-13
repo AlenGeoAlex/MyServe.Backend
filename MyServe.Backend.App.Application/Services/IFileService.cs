@@ -13,5 +13,5 @@ public interface IFileService
     public Task<(List<FileDto> files, List<FileDto> parents)> ListMyFilesAsync(Guid userId, Guid? parentId, ListOptions listOptions);
     public Task<FileDto> PatchAsync(FilePatchCommand filePatch);
     public Task<List<FileDto>> SoftDeleteAsync(DeleteFileCommand fileId);
-    public Task<FileDto> HardDeleteAsync(List<Guid> fileIds);
+    public Task HardDeleteAsync(List<Guid> fileIds);
 }

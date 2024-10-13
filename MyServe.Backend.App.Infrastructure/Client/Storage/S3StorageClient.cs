@@ -5,6 +5,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Util;
 using MimeMapping;
 using MyServe.Backend.App.Application.Client;
+using MyServe.Backend.App.Application.Extensions;
 using MyServe.Backend.Common.Exceptions.Storage;
 using MyServe.Backend.Common.Models;
 using MyServe.Backend.Common.Options;
@@ -61,7 +62,7 @@ public abstract class S3StorageClient(IAmazonS3 s3Client, ILogger logger, Bucket
         return putObjectRequest;
     }
 
-    protected string GetAndSetFileNameWithExtensions(FileContent fileContent, string key)
+    private string GetAndSetFileNameWithExtensions(FileContent fileContent, string key)
     {
         if (fileContent.ContentType is not null)
         {
@@ -87,6 +88,39 @@ public abstract class S3StorageClient(IAmazonS3 s3Client, ILogger logger, Bucket
     public Task DeleteAsync(Uri uri)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<Uri>> DeleteMultipleAsync(IEnumerable<Uri> uris)
+    {
+        var deleteObjectsRequest = new DeleteObjectsRequest()
+        {
+            BucketName = bucketCustomConfiguration.Bucket,
+            Quiet = true
+        };
+        List<Uri> failed = [];
+        foreach (var uri in uris)
+        {
+            var objectInfo = bucketCustomConfiguration.FromUrl(uri);
+            if (objectInfo is null)
+            {
+                logger.Warning("Failed to determine the storage key for object {Url} on bucket {Bucket}", uri, deleteObjectsRequest.BucketName);
+                failed.Add(uri);
+                continue;
+            }
+            
+            deleteObjectsRequest.AddKey(objectInfo.Value.Key);
+            logger.Information("Identified object: {ObjectKey} on {Bucket}", objectInfo.Value.Key, deleteObjectsRequest.BucketName);
+        }
+
+        var deletionResponse = await s3Client.DeleteObjectsAsync(deleteObjectsRequest);
+        logger.Information("The deletion request has been completed and has charged {Value}",deletionResponse.RequestCharged.Value);
+        
+        deletionResponse.DeleteErrors.ForEach(x =>
+        {
+            logger.Error("Failed to delete {Key} due to {Code} - {Reason}", x.Key, x.Code, x.Message);
+            failed.Add(new Uri($"{bucketCustomConfiguration.CustomDomainUrl}/{x.Key}"));
+        });
+        return failed;
     }
 
     public async Task<Uri> GeneratePreSignedUrlAsync(SignedStorageAccessOptions accessOptions, params string[] filePath)

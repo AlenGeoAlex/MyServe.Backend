@@ -5,6 +5,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MyServe.Backend.Infrastructure", "MyServe.Backend.Infrastructure", "{619C9F09-AF0F-4A47-8DCC-FB93D6CEFA3C}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		Dockerfile-Consumer-Job = Dockerfile-Consumer-Job
+		.dockerignore = .dockerignore
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServe.Backend.App.Common", "MyServe.Backend.App.Common\MyServe.Backend.App.Common.csproj", "{2E4F2FF1-2C96-4D1F-937C-9B2634915C40}"

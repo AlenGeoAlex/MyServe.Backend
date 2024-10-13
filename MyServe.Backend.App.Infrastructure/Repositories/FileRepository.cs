@@ -164,9 +164,12 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
         return (files, parentList);
     }
 
-    public Task HardDeleteAsync(List<Guid> ids)
+    public async Task HardDeleteAsync(List<Guid> ids)
     {
-        throw new NotImplementedException();
+        await readWriteDatabase.ExecuteAsync(FileSql.HardDeleteById, new
+        {
+            Ids = ids.ToArray()
+        });
     }
 
     public async Task<List<File>> SoftDeleteAsync(Guid id)
@@ -182,6 +185,7 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
                         Id = x.id,
                         Name = x.name,
                         Type = fileTypeRaw!.GetFileTypeFromString()!.Value,
+                        TargetUrl = x.target_url,
                     };
                 }).ToList();
 
@@ -312,6 +316,10 @@ public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlCon
 
         public const string SoftDeleteById = """
                                                 SELECT * FROM files."delete_recursive"(@Id);
+                                             """;
+
+        public const string HardDeleteById = """
+                                                DELETE FROM files."file" WHERE id = ANY(@Ids); 
                                              """;
     }
 }

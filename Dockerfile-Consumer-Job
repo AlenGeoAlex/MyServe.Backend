@@ -11,9 +11,16 @@ COPY ["MyServe.Backend.App.Application/MyServe.Backend.App.Application.csproj", 
 COPY ["MyServe.Backend.App.Domain/MyServe.Backend.App.Domain.csproj", "MyServe.Backend.App.Domain/"]
 COPY ["MyServe.Backend.App.Common/MyServe.Backend.App.Common.csproj", "MyServe.Backend.App.Common/"]
 COPY ["MyServe.Backend.Worker.Infrastructure/MyServe.Backend.Worker.Infrastructure.csproj", "MyServe.Backend.Worker.Infrastructure/"]
+RUN dotnet restore "MyServe.Backend.App.Common/MyServe.Backend.App.Common.csproj"
+RUN dotnet restore "MyServe.Backend.App.Application/MyServe.Backend.App.Application.csproj"
+RUN dotnet restore "MyServe.Backend.App.Domain/MyServe.Backend.App.Domain.csproj"
+RUN dotnet restore "MyServe.Backend.App.Infrastructure/MyServe.Backend.App.Infrastructure.csproj"
+RUN dotnet restore "MyServe.Backend.Worker.Infrastructure/MyServe.Backend.Worker.Infrastructure.csproj"
 RUN dotnet restore "MyServe.Backend.Worker.MessageConsumer/MyServe.Backend.Worker.MessageConsumer.csproj"
+
 COPY . .
 WORKDIR "/src/MyServe.Backend.Worker.MessageConsumer"
+
 RUN dotnet build "MyServe.Backend.Worker.MessageConsumer.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
