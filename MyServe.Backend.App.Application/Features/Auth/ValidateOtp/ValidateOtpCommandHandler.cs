@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using MyServe.Backend.Common.Impl;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.App.Application.Services;
@@ -7,7 +8,13 @@ using Serilog;
 
 namespace MyServe.Backend.App.Application.Features.Auth.ValidateOtp;
 
-public class ValidateOtpCommandHandler(ILogger logger, IAccessTokenClient accessTokenClient, IUserOtpService userOtpService, IRefreshTokenService refreshTokenService, IReadWriteUnitOfWork readWriteUnitOfWork) : IRequestHandler<ValidateOtpCommand, ValidateOtpResponse>
+public class ValidateOtpCommandHandler(
+    ILogger logger,
+    IAccessTokenClient accessTokenClient,
+    IUserOtpService userOtpService,
+    IRefreshTokenService refreshTokenService,
+    IConfiguration configuration,
+    IReadWriteUnitOfWork readWriteUnitOfWork) : IRequestHandler<ValidateOtpCommand, ValidateOtpResponse>
 {
     public async Task<ValidateOtpResponse> Handle(ValidateOtpCommand request, CancellationToken cancellationToken)
     {

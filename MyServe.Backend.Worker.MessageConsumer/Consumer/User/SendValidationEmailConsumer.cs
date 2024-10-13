@@ -1,6 +1,8 @@
+using Flurl;
 using MassTransit;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.App.Application.Messages.User;
+using MyServe.Backend.Common;
 using MyServe.Backend.Common.Constants;
 using MyServe.Backend.Common.Constants.EmailTemplate;
 using MyServe.Backend.Common.Models;
@@ -12,6 +14,12 @@ public class SendValidationEmailConsumer(IEmailClient emailClient, ILogger logge
 {
     public async Task Consume(ConsumeContext<RequestEmailValidationCommand> context)
     {
+        if ((DateTimeOffset.UtcNow - context.Message.CreatedAt).Minutes > AppConfigurations.Auth.OtpValidityDurationInMinutes + 2)
+        {
+            logger.Information("Ignoring the validation message as the OTP for {User} as has been expired", context.Message.Email);
+            return;
+        }
+
         try
         {
             logger.Information("Received command to send email otp email for {User} for {Device}", context.Message.Email, context.Message.Device);
@@ -19,12 +27,18 @@ public class SendValidationEmailConsumer(IEmailClient emailClient, ILogger logge
             Dictionary<string, string> subjectPlaceholders = new();
             Dictionary<string, string> bodyPlaceholders = new();
 
+            var directLink = new Uri(context.Message.RequestOrigin)
+                .AppendPathSegment("callback")
+                .AppendPathSegment("otp")
+                .SetQueryParam("code", requestEmailValidationCommand.Code)
+                .SetFragment(context.Message.CreatedAt.ToString());
+
             subjectPlaceholders.Add(EmailPlaceholdersConstants.Subject.ValidateOtp.Code, requestEmailValidationCommand.Code);
         
             bodyPlaceholders.Add(EmailPlaceholdersConstants.Body.ValidateOtp.Code, requestEmailValidationCommand.Code);
             bodyPlaceholders.Add(EmailPlaceholdersConstants.Body.ValidateOtp.User, requestEmailValidationCommand.Email);
             bodyPlaceholders.Add(EmailPlaceholdersConstants.Body.ValidateOtp.Device, requestEmailValidationCommand.Device == "WebApp" ? "Browser" : "App");
-            bodyPlaceholders.Add(EmailPlaceholdersConstants.Body.ValidateOtp.Url, string.Empty);
+            bodyPlaceholders.Add(EmailPlaceholdersConstants.Body.ValidateOtp.Url, directLink.ToString());
 
             var content = await EmailTemplates.ValidateOtp.RenderTemplateAsync(
                 subjectPlaceholders,

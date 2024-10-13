@@ -7,4 +7,5 @@ public class RequestEmailValidationCommand
     public string Code { get; set; }
     public string Device { get; set; }
     public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow; 
+    public string RequestOrigin { get; set; }
 }

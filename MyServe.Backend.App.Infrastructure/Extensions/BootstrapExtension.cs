@@ -19,6 +19,7 @@ using MyServe.Backend.App.Domain.Repositories;
 using MyServe.Backend.App.Infrastructure.Abstract.UnitOfWork;
 using MyServe.Backend.App.Infrastructure.Client;
 using MyServe.Backend.App.Infrastructure.Client.Cache;
+using MyServe.Backend.App.Infrastructure.Client.OAuth;
 using MyServe.Backend.App.Infrastructure.Client.Storage;
 using MyServe.Backend.App.Infrastructure.Repositories;
 using MyServe.Backend.App.Infrastructure.Services;
@@ -26,6 +27,7 @@ using MyServe.Backend.App.Infrastructure.TypeHandler;
 using MyServe.Backend.Common.Extensions;
 using MyServe.Backend.Common.Models;
 using MyServe.Backend.Common.Options;
+using MyServe.Backend.Common.Options.OAuth;
 using Npgsql;
 using Serilog;
 using StackExchange.Redis;
@@ -35,27 +37,34 @@ namespace MyServe.Backend.App.Infrastructure.Extensions;
 
 public static class BootstrapExtension
 {
+    /**
+     * Configure the infrastructure layer
+     */
     public static async Task ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration,
         ISecretClient secretClient)
     {
-        // await services.ConfigureSupabase(secretClient);
         await services.ConfigureCache(configuration, secretClient);
         await services.ConfigureDatabase(secretClient);
         await services.ConfigureMessaging(configuration, secretClient);
         await services.ConfigureStorage(configuration, secretClient);
+        await services.ConfigureOAuth(secretClient);
         
         services.RegisterInfrastructureServices();
         services.RegisterRepositories();
         services.RegisterTypeHandlers();
-        services.ConfigureInfrastructureLayer();
+        services.ConfigureMisc();
     }
 
-    private static void ConfigureInfrastructureLayer(this IServiceCollection services)
+    /**
+     * Configure few misc services
+     */
+    private static void ConfigureMisc(this IServiceCollection services)
     {
         services.AddSingleton<IRandomStringGeneratorClient, RandomStringGeneratorClient>();
         services.AddSingleton<IAccessTokenClient, JwtAccessTokenClient>();
     }
     
+    /*
     private static async Task ConfigureSupabase(this IServiceCollection serviceCollection, ISecretClient secretClient)
     {
         if (serviceCollection.IsRegistered(typeof(Supabase.Client)))
@@ -77,12 +86,11 @@ public static class BootstrapExtension
             AutoConnectRealtime = true
         }));
     }
-
-    private static async Task ConfigureS3(this IServiceCollection serviceCollection, ISecretClient secretClient)
-    {
-        return;
-    }
+    */
     
+    /**
+     * Configure redis cache if its possible to connect to it
+     */
     private static async Task ConfigureCache(this IServiceCollection services, IConfiguration configuration,
         ISecretClient secretClient)
     {
@@ -107,6 +115,9 @@ public static class BootstrapExtension
         Log.Logger.Information("Connected to Redis...");
     }
 
+    /**
+     * Try a redis connection if possible
+     */
     private static async Task<ConnectionMultiplexer?> TryAndConnectRedis(ISecretClient secretClient)
     {
         try
@@ -358,6 +369,16 @@ public static class BootstrapExtension
         });
     }
 
+    private static async Task ConfigureOAuth(this IServiceCollection serviceCollection, ISecretClient secretClient)
+    {
+        List<Task> oAuthTasks =
+        [
+            ConfigureGoogleOAuth(serviceCollection, secretClient)
+        ];
+
+        await Task.WhenAll(oAuthTasks);
+    }
+
     private static Task ConfigureAmazonSqs(this IServiceCollection collection, ISecretClient secretClient)
     {
         return Task.CompletedTask;
@@ -367,5 +388,33 @@ public static class BootstrapExtension
     private static void ConfigurePgSql(this IServiceCollection serviceCollection)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
+    }
+
+    private static async Task  ConfigureGoogleOAuth(this IServiceCollection serviceCollection, ISecretClient secretClient)
+    {
+        try
+        {
+            List<Task<string>> vaultTasks =
+            [
+                secretClient.GetSecretAsync(VaultConstants.OAuth.Google.ClientId),
+                secretClient.GetSecretAsync(VaultConstants.OAuth.Google.SecretKey),
+            ];
+
+            var secretTask = await Task.WhenAll(vaultTasks);
+            var clientId = secretTask[0];
+            var secret = secretTask[1];
+
+            var oAuthOptions = new GoogleOAuthOptions(clientId, secret);
+            serviceCollection.AddSingleton(oAuthOptions);
+            serviceCollection.AddKeyedSingleton<IOAuthPayloadClient, GoogleOAuthPayloadClient>(ServiceKeyConstants.OAuthValidator.Google);
+            Log.Logger.Information("Registered Google OAuth...");
+        }
+        catch (Exception e)
+        {
+            serviceCollection.AddKeyedSingleton<IOAuthPayloadClient, NoOAuthPayloadClient>(ServiceKeyConstants.OAuthValidator.Google);
+            serviceCollection.AddSingleton(GoogleOAuthOptions.Empty);
+            Log.Logger.Warning("Skipped registering Google OAuth...");
+            Log.Logger.Warning(e.Message);
+        }
     }
 }

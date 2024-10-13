@@ -11,7 +11,7 @@ public class CreateOtpCommandHandler(IReadWriteUnitOfWork readWriteUnitOfWork, I
         await using var uow = await readWriteUnitOfWork.StartTransactionAsync();
         try
         {
-            var otp = await userOtpService.CreateUserOtpAsync(request.EmailAddress, request.Device);
+            var otp = await userOtpService.CreateUserOtpAsync(request.EmailAddress,request.Origin, request.Device);
             await uow.CommitAsync();
             return new CreateOtpResponse()
             {

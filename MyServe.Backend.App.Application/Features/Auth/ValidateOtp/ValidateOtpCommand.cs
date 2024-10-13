@@ -7,4 +7,5 @@ public class ValidateOtpCommand : IAppRequest<ValidateOtpResponse>
     public string Email { get; set; } = null!;
     public string Code { get; set; } = null!;
     public string Device { get; set; } = null!;
+    public string Origin { get; set; } = null!;
 }

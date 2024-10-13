@@ -13,4 +13,9 @@ public static class ServiceKeyConstants
         public const string ProfileStorage = "profile-storage";
         public const string FileStorage = "file-storage";
     }
+
+    public static class OAuthValidator
+    {
+        public const string Google = "oauth-validator-google";
+    }
 }

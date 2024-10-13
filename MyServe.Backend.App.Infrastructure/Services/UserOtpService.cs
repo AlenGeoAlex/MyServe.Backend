@@ -5,12 +5,13 @@ using MyServe.Backend.App.Application.Messages.User;
 using MyServe.Backend.App.Application.Services;
 using MyServe.Backend.App.Domain.Models.User;
 using MyServe.Backend.App.Domain.Repositories;
+using MyServe.Backend.Common;
 
 namespace MyServe.Backend.App.Infrastructure.Services;
 
 public class UserOtpService(IUserOtpRepository userOtpRepository, IRandomStringGeneratorClient generatorClient, IUserService userService, IPublishEndpoint publishEndpoint) : IUserOtpService
 {
-    public async Task<OtpDto> CreateUserOtpAsync(string emailAddress, string? device = null, TimeSpan? expiry = null)
+    public async Task<OtpDto> CreateUserOtpAsync(string emailAddress, string requestOrigin, string? device = null, TimeSpan? expiry = null)
     {
         var (activeOtpCount, isAccountLocked, userId) = await userOtpRepository.GetOtpCreationCriteria(emailAddress);
         if (userId == Guid.Empty)
@@ -43,7 +44,7 @@ public class UserOtpService(IUserOtpRepository userOtpRepository, IRandomStringG
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    Expiry = DateTimeOffset.UtcNow.AddMinutes(10),
+                    Expiry = DateTimeOffset.UtcNow.AddMinutes(AppConfigurations.Auth.OtpValidityDurationInMinutes),
                     Device = device ?? "WebApp",
                     Otp = generatedOtp
                 });
@@ -53,7 +54,8 @@ public class UserOtpService(IUserOtpRepository userOtpRepository, IRandomStringG
                     Code = generatedOtp,
                     UserId = userId,
                     Device = device ?? "WebApp",
-                    Email = emailAddress
+                    Email = emailAddress,
+                    RequestOrigin = requestOrigin
                 });
 
                 return new OtpDto()

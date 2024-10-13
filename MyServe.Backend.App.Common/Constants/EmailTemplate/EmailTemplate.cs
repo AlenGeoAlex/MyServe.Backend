@@ -24,8 +24,8 @@ public class EmailTemplate(string templateKey, string subject)
         foreach (var (placeholder, replacement) in bodyPlaceholder)
         {
             var tempPlaceholderKey = placeholder;
-            if(!tempPlaceholderKey.StartsWith("{{"))
-                tempPlaceholderKey = "{{" + placeholder + "}}";
+            if(!tempPlaceholderKey.StartsWith("{("))
+                tempPlaceholderKey = "{(" + placeholder + ")}";
             
             tempBody = tempBody.Replace(tempPlaceholderKey, replacement);
         }

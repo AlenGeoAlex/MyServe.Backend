@@ -20,7 +20,7 @@ public static class BootstrapExtensions
     {
         services.AddValidatorsFromAssembly(typeof(BootstrapExtensions).Assembly);
         await services.ConfigureTokenValidation(secretClient);
-        ConfigureCors(services);
+        ConfigureCors(services, configuration);
         services.BuildRateLimiter();
         return services;
     }
@@ -50,8 +50,10 @@ public static class BootstrapExtensions
         });
     }
 
-    private static IServiceCollection ConfigureCors(this IServiceCollection services)
+    private static IServiceCollection ConfigureCors(this IServiceCollection services, IConfiguration configuration)
     {
+        List<string> allowedOrigins = [];
+        configuration.Bind("Origins", allowedOrigins);
         services.AddCors(x =>
         {
             x.AddPolicy("cors", builder =>
@@ -59,7 +61,7 @@ public static class BootstrapExtensions
                 builder.AllowAnyMethod();
                 builder.AllowCredentials();
                 builder.AllowAnyHeader();
-                builder.SetIsOriginAllowed(_ => true);
+                builder.SetIsOriginAllowed(origin => allowedOrigins.Contains(origin));
             });
         });
         return services;

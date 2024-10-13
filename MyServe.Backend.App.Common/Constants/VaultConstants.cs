@@ -2,6 +2,16 @@ namespace MyServe.Backend.Common.Constants;
 
 public static class VaultConstants
 {
+
+    public static class OAuth
+    {
+        public static class Google
+        {
+            public const string ClientId = "oauth-google-client-id";
+            public const string SecretKey = "oauth-google-secret-key";
+        }
+    }
+    
     public static class Authentication
     {
         public const string AudienceKey = "authentication-audience";
