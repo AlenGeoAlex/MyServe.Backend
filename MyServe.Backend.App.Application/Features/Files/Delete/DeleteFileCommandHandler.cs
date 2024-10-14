@@ -20,6 +20,7 @@ public class DeleteFileCommandHandler(IFileService fileService, IRequestContext 
             else
             {
                 context.CacheControl.AddExactKeyToExpire(CacheConstants.FileIdCacheKey, deletedFile.Id.ToString());
+                context.CacheControl.AddKeyToExpire(CacheConstants.FileListCacheKey, context.Requester.UserId.ToString());
             }
         }
         return new DeleteFileResponse();
