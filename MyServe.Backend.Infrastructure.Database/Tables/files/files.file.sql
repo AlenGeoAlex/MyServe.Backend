@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "files"."file"(
     constraint "fk_file_parent" foreign key (parent) references files.file (id),
     constraint "fk_file_created" foreign key (created) references public.profile (id),
     constraint "fk_file_owner" foreign key (owner) references public.profile (id),
-    constraint "unq_file_name_parent_owner" unique ("name", "parent", "owner")
+    constraint "unq_file_name_parent_owner" unique ("name", "parent", "owner", "is_deleted")
 );
 
 CREATE OR REPLACE FUNCTION check_file_validation()

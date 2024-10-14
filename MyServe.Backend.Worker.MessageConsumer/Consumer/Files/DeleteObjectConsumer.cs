@@ -60,6 +60,8 @@ public class DeleteObjectConsumer(ILogger logger,
                 var deletedKeys = context.Message.Files.Select(x => x.Key).Except(failedIds).ToList();
                 await fileService.HardDeleteAsync(deletedKeys);
             }
+
+            await uow.CommitAsync();
         }
         catch (Exception e)
         {
