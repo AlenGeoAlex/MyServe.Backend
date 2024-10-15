@@ -55,3 +55,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE TRIGGER validate_parent_type
     BEFORE INSERT OR UPDATE ON files.file
     FOR EACH ROW EXECUTE FUNCTION check_file_validation();
+
+CREATE INDEX idx_name_mime_type ON files.file USING gin (
+                                                         name gin_trgm_ops,
+                                                         mime_type gin_trgm_ops
+    );

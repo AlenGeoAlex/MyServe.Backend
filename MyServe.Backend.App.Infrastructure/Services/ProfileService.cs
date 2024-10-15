@@ -1,8 +1,10 @@
 using System.Net.Mime;
 using Microsoft.Extensions.DependencyInjection;
 using MyServe.Backend.App.Application.Client;
+using MyServe.Backend.App.Application.Dto.Me;
 using MyServe.Backend.App.Application.Dto.Profile;
 using MyServe.Backend.App.Application.Features.Profile.Create;
+using MyServe.Backend.App.Application.Features.Profile.Search;
 using MyServe.Backend.App.Application.Services;
 using MyServe.Backend.App.Domain.Models.Profile;
 using MyServe.Backend.App.Domain.Repositories;
@@ -11,6 +13,7 @@ using MyServe.Backend.App.Infrastructure.Repositories;
 using MyServe.Backend.Common.Constants;
 using MyServe.Backend.Common.Constants.StorageConstants;
 using MyServe.Backend.Common.Models;
+using File = MyServe.Backend.App.Domain.Models.Files.File;
 
 namespace MyServe.Backend.App.Infrastructure.Services;
 
@@ -63,5 +66,32 @@ public class ProfileService(
         var pro = await profileRepository.AddAsync(profile);
 
         return ProfileMapper.ToProfileDto(profile);;
+    }
+
+    public async Task<List<SearchDto>> SearchAsync(MeSearchQuery searchQuery, CancellationToken cancellationToken = default)
+    {
+        var entities = await profileRepository.SearchAcrossProfileAsync(searchQuery.Search, searchQuery.UserId);
+        List<SearchDto> responses = [];
+        foreach (var entity in entities)
+        {
+            if (entity is File file)
+            {
+                responses.Add(new SearchDto()
+                {
+                    Service = ServiceType.File.ToString(),
+                    Name = file.Name,
+                    Id = file.Id,
+                    Description = "",
+                    Metadata =
+                    {
+                        {"ParentId", file.ParentId?.ToString() },
+                        {"Type", file.Type.ToString()},
+                        {"MimeType", file.MimeType},
+                        {"TargetSize", file.TargetSize.ToString()}
+                    }
+                });       
+            }
+        }
+        return responses;
     }
 }

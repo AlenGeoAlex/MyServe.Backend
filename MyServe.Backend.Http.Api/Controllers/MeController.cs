@@ -6,6 +6,7 @@ using MyServe.Backend.Common.Constants;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.App.Application.Features.Profile.Create;
 using MyServe.Backend.App.Application.Features.Profile.Me;
+using MyServe.Backend.App.Application.Features.Profile.Search;
 using Newtonsoft.Json;
 using ILogger = Serilog.ILogger;
 
@@ -18,7 +19,7 @@ public class MeController(ICacheService cacheService, ILogger logger, IRequestCo
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<MeResponse>> Get()
     {
         var requesterUserId = requestContext.Requester.UserId;
         requestContext.CacheControl.FrameEndpointCacheKey(CacheConstants.UserCacheKey, requesterUserId.ToString());
@@ -38,7 +39,7 @@ public class MeController(ICacheService cacheService, ILogger logger, IRequestCo
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Post()
+    public async Task<ActionResult<CreateProfileResponse>> Post()
     {
         var formCollection = await Request.ReadFormAsync();
         if (!formCollection.ContainsKey("body"))
@@ -64,6 +65,14 @@ public class MeController(ICacheService cacheService, ILogger logger, IRequestCo
             return Conflict();
         
         return CreatedAtRoute("GetUser", new { controller = "User", id = createProfileResponse.Id }, null);
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<MeSearchResponse>> Search([FromQuery] MeSearchQuery searchQuery)
+    {
+        searchQuery.UserId = requestContext.Requester.UserId;
+        var response = await mediator.Send(searchQuery);
+        return Ok(response);
     }
     
 }

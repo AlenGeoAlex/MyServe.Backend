@@ -53,7 +53,7 @@ public class OAuthCommandHandler(
             var refreshTokenTask = refreshTokenService.CreateRefreshTokenAsync(user.Id);
 
             await Task.WhenAll(accessTokenTask, refreshTokenTask);
-            
+            await uow.CommitAsync();
             return new OAuthResponse()
             {
                 Success = true,
@@ -64,6 +64,7 @@ public class OAuthCommandHandler(
         catch (Exception e)
         {
             logger.Error(e, "An unknown error occured while generating the user access for {EmailAddress}", userIdentificationDto.Email);
+            await uow.RollbackAsync();
             return new OAuthResponse()
             {
                 Success = false,

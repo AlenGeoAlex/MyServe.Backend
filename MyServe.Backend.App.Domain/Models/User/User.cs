@@ -1,6 +1,6 @@
 namespace MyServe.Backend.App.Domain.Models.User;
 
-public class User
+public class User : IEntity
 {
     public Guid Id { get; set; }
     public string EmailAddress { get; set; }

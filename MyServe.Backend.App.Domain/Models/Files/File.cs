@@ -1,6 +1,6 @@
 namespace MyServe.Backend.App.Domain.Models.Files;
 
-public class File
+public class File : IEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

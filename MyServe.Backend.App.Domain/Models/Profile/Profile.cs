@@ -3,7 +3,7 @@ using Supabase.Postgrest.Models;
 
 namespace MyServe.Backend.App.Domain.Models.Profile;
 
-public class Profile
+public class Profile : IEntity
 {
     public Profile()
     {

@@ -1,12 +1,15 @@
 using Dapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.DependencyInjection;
+using MyServe.Backend.App.Domain.Extensions;
+using MyServe.Backend.App.Domain.Models;
 using MyServe.Backend.App.Domain.Models.Profile;
 using MyServe.Backend.App.Domain.Repositories;
 using MyServe.Backend.App.Infrastructure.Abstract;
 using MyServe.Backend.App.Infrastructure.Database.NpgSql;
 using Newtonsoft.Json;
 using Npgsql;
+using File = MyServe.Backend.App.Domain.Models.Files.File;
 
 namespace MyServe.Backend.App.Infrastructure.Repositories;
 
@@ -70,6 +73,30 @@ public class ProfileRepository([FromKeyedServices("read-only-connection")]Npgsql
         return emailList.Any();
     }
 
+    public async Task<List<IEntity>> SearchAcrossProfileAsync(string search, Guid userId)
+    {
+        List<IEntity> entities = [];
+        var searchParam = search.Split(" ").Select(x => $"%{x}%").ToList();
+        var gridReader = await readOnlyConnection.QueryMultipleAsync(ProfileSql.SearchEntities, new
+        {
+            UserId = userId,
+            @Search = searchParam,
+        });
+
+        entities.AddRange(from file in await gridReader.ReadAsync()
+            let fileTypeRaw = file.type.ToString()
+            select new File()
+            {
+                Id = file.id,
+                Name = file.name,
+                ParentId = file.parent,
+                MimeType = file.mime_type,
+                TargetSize = file.target_size,
+                Type = ((string)fileTypeRaw).GetFileTypeFromString()!.Value
+            });
+        return entities;
+    }
+
     private static class ProfileSql
     {
         public const string SelectById = """
@@ -80,5 +107,15 @@ public class ProfileRepository([FromKeyedServices("read-only-connection")]Npgsql
                                   INSERT INTO public.profile (id, first_name, last_name, "profile_settings", "created_at", "profile_image", "encryption_key") VALUES (@Id, @FirstName, @LastName, @Settings, @CreatedAt, @ProfileImage, @EncryptionKey);;
                                   """;
        public const string Exists = "SELECT 1 FROM profile WHERE id = @Email LIMIT 1";
+
+       public const string SearchEntities = """
+                                            
+                                            SELECT id AS "id", "name" AS name, parent AS "parent", "mime_type", "type", target_size
+                                            FROM files.file f WHERE f.owner = @UserId AND is_deleted = false AND (
+                                                "name" ILIKE ANY(@Search) OR mime_type ILIKE ANY(@Search)
+                                            )
+                                            ORDER BY f.name, f.created
+                                            
+                                            """;
     }
 }
