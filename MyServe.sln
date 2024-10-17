@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServe.Backend.Worker.Mess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServe.Backend.Worker.Infrastructure", "MyServe.Backend.Worker.Infrastructure\MyServe.Backend.Worker.Infrastructure.csproj", "{D2976ACE-D777-40A6-B1A1-2C3A25A07C86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServe.Backend.Worker.Scheduled", "MyServe.Backend.Worker.Scheduled\MyServe.Backend.Worker.Scheduled.csproj", "{29CE072D-3619-4B15-AB5F-5C2EC673350A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{D2976ACE-D777-40A6-B1A1-2C3A25A07C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2976ACE-D777-40A6-B1A1-2C3A25A07C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2976ACE-D777-40A6-B1A1-2C3A25A07C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29CE072D-3619-4B15-AB5F-5C2EC673350A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29CE072D-3619-4B15-AB5F-5C2EC673350A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29CE072D-3619-4B15-AB5F-5C2EC673350A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29CE072D-3619-4B15-AB5F-5C2EC673350A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{86380635-7341-46FC-89F1-C631D2A37D2A} = {A34F7D02-2A60-454C-8CAE-971075652327}
@@ -70,5 +76,6 @@ Global
 		{5013C947-CDE3-4CF6-8767-330481288FAC} = {B4424BD9-0484-41B6-8ECC-4F66351833EE}
 		{2D452ABA-0619-461A-A7E9-9AD699AF5155} = {B4424BD9-0484-41B6-8ECC-4F66351833EE}
 		{D2976ACE-D777-40A6-B1A1-2C3A25A07C86} = {A34F7D02-2A60-454C-8CAE-971075652327}
+		{29CE072D-3619-4B15-AB5F-5C2EC673350A} = {B4424BD9-0484-41B6-8ECC-4F66351833EE}
 	EndGlobalSection
 EndGlobal

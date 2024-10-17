@@ -59,10 +59,39 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push alenalex/myserve-worker-message-consumer:master
+
+
+  build-scheduled-job:
+    runs-on: self-hosted
+    env:
+      DOTNET_INSTALL_DIR: "./.dotnet"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Build Docker Image
+        run: |
+          docker buildx build  --platform linux/arm64 -t alenalex/myserve-worker-scheduled:master --file Dockerfile-Scheduled-Job .
+
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Image
+        run: |
+          docker push alenalex/myserve-worker-scheduled:master
+  
   
   deploy:
     runs-on: ubuntu-22.04
-    needs: ["build-api", "build-consumer-job"]
+    needs: ["build-api", "build-consumer-job", "build-scheduled-job"]
     
     steps:
       - name: Checkout Repository

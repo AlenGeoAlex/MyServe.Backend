@@ -1,0 +1,33 @@
+﻿FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
+WORKDIR /app
+
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["MyServe.Backend.Worker.Scheduled/MyServe.Backend.Worker.Scheduled.csproj", "MyServe.Backend.Worker.Scheduled/"]
+COPY ["MyServe.Backend.App.Infrastructure/MyServe.Backend.App.Infrastructure.csproj", "MyServe.Backend.App.Infrastructure/"]
+COPY ["MyServe.Backend.App.Application/MyServe.Backend.App.Application.csproj", "MyServe.Backend.App.Application/"]
+COPY ["MyServe.Backend.App.Domain/MyServe.Backend.App.Domain.csproj", "MyServe.Backend.App.Domain/"]
+COPY ["MyServe.Backend.App.Common/MyServe.Backend.App.Common.csproj", "MyServe.Backend.App.Common/"]
+COPY ["MyServe.Backend.Worker.Infrastructure/MyServe.Backend.Worker.Infrastructure.csproj", "MyServe.Backend.Worker.Infrastructure/"]
+RUN dotnet restore "MyServe.Backend.App.Common/MyServe.Backend.App.Common.csproj"
+RUN dotnet restore "MyServe.Backend.App.Application/MyServe.Backend.App.Application.csproj"
+RUN dotnet restore "MyServe.Backend.App.Domain/MyServe.Backend.App.Domain.csproj"
+RUN dotnet restore "MyServe.Backend.App.Infrastructure/MyServe.Backend.App.Infrastructure.csproj"
+RUN dotnet restore "MyServe.Backend.Worker.Infrastructure/MyServe.Backend.Worker.Infrastructure.csproj"
+RUN dotnet restore "MyServe.Backend.Worker.Scheduled/MyServe.Backend.Worker.Scheduled.csproj"
+
+COPY . .
+WORKDIR "/src/MyServe.Backend.Worker.Scheduled"
+
+RUN dotnet build "MyServe.Backend.Worker.Scheduled.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "MyServe.Backend.Worker.Scheduled.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM --platform=$BUILDPLATFORM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "MyServe.Backend.Worker.Scheduled.dll"]

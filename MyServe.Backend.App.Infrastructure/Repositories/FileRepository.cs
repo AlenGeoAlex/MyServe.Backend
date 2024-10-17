@@ -10,13 +10,14 @@ using MyServe.Backend.App.Domain.Models.Profile;
 using MyServe.Backend.App.Domain.Repositories;
 using MyServe.Backend.App.Infrastructure.Abstract;
 using MyServe.Backend.App.Infrastructure.Database.NpgSql;
+using MyServe.Backend.Common.Constants;
 using MyServe.Backend.Common.Options;
 using Npgsql;
 using File = MyServe.Backend.App.Domain.Models.Files.File;
 
 namespace MyServe.Backend.App.Infrastructure.Repositories;
 
-public class FileRepository([FromKeyedServices("read-only-connection")]NpgsqlConnection readOnlyConnection, [FromKeyedServices("read-write-connection")] NpgsqlConnection readWriteDatabase) : AbstractRepository<File>(readOnlyConnection, readWriteDatabase), IFileRepository
+public class FileRepository([FromKeyedServices(ServiceKeyConstants.Database.ReadDatabase)]NpgsqlConnection readOnlyConnection, [FromKeyedServices(ServiceKeyConstants.Database.ReadWriteDatabase)] NpgsqlConnection readWriteDatabase) : AbstractRepository<File>(readOnlyConnection, readWriteDatabase), IFileRepository
 {
     public override async Task<File?> GetByIdAsync(Guid id)
     {

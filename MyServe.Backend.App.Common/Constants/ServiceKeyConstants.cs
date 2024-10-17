@@ -4,8 +4,8 @@ public static class ServiceKeyConstants
 {
     public static class Database
     {
-        public const string ReadWriteDatabase = "ReadWriteDatabase";
-        public const string ReadDatabase = "ReadDatabase";
+        public const string ReadWriteDatabase = "read-write-connection";
+        public const string ReadDatabase = "read-only-connection";
     }
 
     public static class Storage

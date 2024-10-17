@@ -5,10 +5,10 @@ using MyServe.Backend.App.Domain.Extensions;
 using MyServe.Backend.App.Infrastructure.Extensions;
 using MyServe.Backend.Common.Extensions;
 using MyServe.Backend.Worker.Infrastructure.Extensions;
-using MyServe.Backend.Worker.MessageConsumer.Extensions;
+using MyServe.Backend.Worker.Scheduled.Extensions;
 using Serilog;
 
-namespace MyServe.Backend.Worker.MessageConsumer;
+namespace MyServe.Backend.Worker.Scheduled;
 
 public static class Program
 {
