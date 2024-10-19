@@ -47,7 +47,6 @@ public class ProfileService(
                 NotificationEnabled = command.Settings.NotificationEnabled
             },
             EmailAddress = command.Email,
-            EncryptionKey = command.EncryptionKey
         };
 
         

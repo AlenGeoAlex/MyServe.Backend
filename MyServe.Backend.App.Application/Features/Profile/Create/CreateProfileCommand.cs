@@ -8,7 +8,6 @@ public class CreateProfileCommand : IAppRequest<CreateProfileResponse>
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public string EncryptionKey { get; set; }
     public CreateProfileSettingsCommand Settings { get; set; } = new();
     public Stream? ProfileImageStream = null!;
     public string? ContentType = null!;

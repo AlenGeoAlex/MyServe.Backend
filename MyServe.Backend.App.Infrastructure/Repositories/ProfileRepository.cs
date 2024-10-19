@@ -41,7 +41,6 @@ public class ProfileRepository([FromKeyedServices("read-only-connection")]Npgsql
             Settings = new JsonBParameter<ProfileSettings>(entity.ProfileSettings),
             entity.CreatedAt,
             ProfileImage = entity.ProfileImageUrl,
-            entity.EncryptionKey
         });
 
         return entity;
@@ -100,11 +99,11 @@ public class ProfileRepository([FromKeyedServices("read-only-connection")]Npgsql
     private static class ProfileSql
     {
         public const string SelectById = """
-                                         SELECT p.id as "id", first_name, last_name, profile_image, profile_settings, created_at, email_address, encryption_key FROM profile p join "user" u on p.id = u.id WHERE p.id = @Id;
+                                         SELECT p.id as "id", first_name, last_name, profile_image, profile_settings, created_at, email_address FROM profile p join "user" u on p.id = u.id WHERE p.id = @Id;
                                          """;
 
         public const string Add = """
-                                  INSERT INTO public.profile (id, first_name, last_name, "profile_settings", "created_at", "profile_image", "encryption_key") VALUES (@Id, @FirstName, @LastName, @Settings, @CreatedAt, @ProfileImage, @EncryptionKey);;
+                                  INSERT INTO public.profile (id, first_name, last_name, "profile_settings", "created_at", "profile_image") VALUES (@Id, @FirstName, @LastName, @Settings, @CreatedAt, @ProfileImage);;
                                   """;
        public const string Exists = "SELECT 1 FROM profile WHERE id = @Email LIMIT 1";
 

@@ -7,13 +7,11 @@ namespace MyServe.Backend.Worker.Scheduled;
 
 public abstract class JobContext(IRequestContext requestContext, ICacheService cacheService, ILogger logger) : IJob
 {
-    
-    protected abstract Task PrepareJob(IJobExecutionContext context);
-    protected abstract Task<bool> ShouldRun(IJobExecutionContext context);
-    protected abstract Task Run(IJobExecutionContext context);
-    protected abstract Task DisposeJob(IJobExecutionContext context);
+    protected abstract Task PrepareJobAsync(IJobExecutionContext context);
+    protected abstract Task<bool> ShouldRunAsync(IJobExecutionContext context);
+    protected abstract Task RunAsync(IJobExecutionContext context);
+    protected abstract Task DisposeJobAsync(IJobExecutionContext context);
     protected abstract bool HasCacheControl { get; set; }
-
     
     public async Task Execute(IJobExecutionContext context)
     {
@@ -22,7 +20,7 @@ public abstract class JobContext(IRequestContext requestContext, ICacheService c
         bool shouldTheJobRun = true;
         try
         { 
-            shouldTheJobRun = await ShouldRun(context);
+            shouldTheJobRun = await ShouldRunAsync(context);
         }
         catch (Exception e)
         {
@@ -38,7 +36,7 @@ public abstract class JobContext(IRequestContext requestContext, ICacheService c
 
         try
         {
-            await PrepareJob(context);
+            await PrepareJobAsync(context);
         }
         catch (Exception e)
         {
@@ -49,7 +47,7 @@ public abstract class JobContext(IRequestContext requestContext, ICacheService c
 
         try
         {
-            await Run(context);
+            await RunAsync(context);
         }
         catch (Exception e)
         {
@@ -60,7 +58,7 @@ public abstract class JobContext(IRequestContext requestContext, ICacheService c
         
         try
         {
-            await DisposeJob(context);
+            await DisposeJobAsync(context);
         }
         catch (Exception e)
         {
@@ -72,10 +70,10 @@ public abstract class JobContext(IRequestContext requestContext, ICacheService c
         DateTime endedAt = DateTime.UtcNow;
         logger.Information("Ending {JobKey} at {DateTime}", context.JobDetail.Key, endedAt);
         logger.Information("Execution of {JobKey} took {Duration} sec", context.JobDetail.Key, (endedAt - startedAt).TotalSeconds);
-        await CleanCache(context);
+        await CleanCacheAsync(context);
     }
 
-    private async Task CleanCache(IJobExecutionContext context)
+    private async Task CleanCacheAsync(IJobExecutionContext context)
     {
         if (!HasCacheControl)
             return;

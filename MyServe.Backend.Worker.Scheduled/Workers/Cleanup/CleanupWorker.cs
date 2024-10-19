@@ -1,3 +1,4 @@
+using Dapper;
 using Microsoft.Extensions.DependencyInjection;
 using MyServe.Backend.App.Application.Client;
 using MyServe.Backend.Common.Abstract;
@@ -18,24 +19,23 @@ public class CleanupWorker(
 {
     protected override bool HasCacheControl { get; set; } = false;
 
-    protected override Task PrepareJob(IJobExecutionContext context)
+    protected override Task PrepareJobAsync(IJobExecutionContext context)
     {
         return Task.CompletedTask;
     }
 
-    protected override Task<bool> ShouldRun(IJobExecutionContext context)
+    protected override Task<bool> ShouldRunAsync(IJobExecutionContext context)
     {
         return Task.FromResult(true);
     }
 
-    protected override async Task Run(IJobExecutionContext context)
+    protected override async Task RunAsync(IJobExecutionContext context)
     {
-        
+        await readWriteDatabase.ExecuteAsync("SELECT public.cleanup()");
     }
 
-    protected override async Task DisposeJob(IJobExecutionContext context)
+    protected override async Task DisposeJobAsync(IJobExecutionContext context)
     {
         return;
     }
-
 }
